@@ -9,6 +9,7 @@ Created on Thu May 31 14:57:08 2018
 import urllib
 import json
 import datetime
+import csv
 
 def usno_oneday(date, loc):
   """
@@ -64,24 +65,28 @@ def process_phase(usno_data):
   out = [usno_phase, fracillum, phase_num]
   return(out)
   
-def create_output(date, loc):
+def create_output(start, end, loc):
   """
-  Writes a JSON config file with phase number, fracillum, phase name, moon rise and set for a variety of days
+  Writes a csv file with date, phase number, fracillum, phase name, and moon rise
   """
-  usno_data = usno_oneday(date, loc)
-  usno_phase, fracillum, phase_num = process_phase(usno_data)
-  out = {'date': date, }
-  return(out)
-
-def test_phase(start, end):
+  out = []
   start_date = datetime.datetime.strptime(start, "%m/%d/%Y")
   end_date   = datetime.datetime.strptime(end, "%m/%d/%Y")
   step       = datetime.timedelta(days=1)
   while start_date <= end_date:
     curdate = start_date.date().strftime("%m/%d/%Y")
-    usno_data = create_output(curdate, "Chicago, IL")
-    print(str(usno_data))
-    print("\n")
+    usno_data = usno_oneday(curdate, loc)
+    usno_phase, fracillum, phase_num = process_phase(usno_data)
+    out += [[curdate, usno_phase, fracillum, phase_num, loc]]
     start_date += step
-    
-test_phase("6/13/2018", "6/14/2018")
+  with open("../configs/moon_info.csv", "w") as f:
+    writer = csv.writer(f)
+    writer.writerows(out)
+
+start_date = datetime.date.today()
+end_date = start_date + datetime.timedelta(days=30)
+
+start_date = start_date.strftime("%m/%d/%Y")
+end_date = end_date.strftime("%m/%d/%Y")
+
+create_output(start_date, end_date, "Chicago, IL")
