@@ -6,7 +6,8 @@ Created on Thu May 31 14:57:08 2018
 @author: Ben Corwin
 """
 
-import urllib
+import urllib.parse
+import urllib.request
 import json
 import datetime
 import csv
