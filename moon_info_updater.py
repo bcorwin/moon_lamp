@@ -6,11 +6,14 @@ Created on Thu May 31 14:57:08 2018
 @author: Ben Corwin
 """
 
+import config
 import urllib.parse
 import urllib.request
 import json
 import datetime
 import csv
+
+OUT_FILE = config.FILE_PATHS['moon_info']
 
 def usno_oneday(date, loc):
   """
@@ -76,11 +79,12 @@ def create_output(start, end, loc):
   step       = datetime.timedelta(days=1)
   while start_date <= end_date:
     curdate = start_date.date().strftime("%m/%d/%Y")
+    print("Pulling moon info for", curdate)
     usno_data = usno_oneday(curdate, loc)
     usno_phase, fracillum, phase_num = process_phase(usno_data)
     out += [[curdate, usno_phase, fracillum, phase_num, loc]]
     start_date += step
-  with open("configs/moon_info.csv", "w") as f:
+  with open(OUT_FILE, "w") as f:
     writer = csv.writer(f)
     writer.writerows(out)
 
