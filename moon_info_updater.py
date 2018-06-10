@@ -80,7 +80,7 @@ def create_output(start, end, loc):
     usno_phase, fracillum, phase_num = process_phase(usno_data)
     out += [[curdate, usno_phase, fracillum, phase_num, loc]]
     start_date += step
-  with open("../configs/moon_info.csv", "w") as f:
+  with open("configs/moon_info.csv", "w") as f:
     writer = csv.writer(f)
     writer.writerows(out)
 
