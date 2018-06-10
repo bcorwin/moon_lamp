@@ -1,4 +1,4 @@
 {
-  "phase":"full",
+  "pin_status":["on", "on"],
   "on": true
 }
