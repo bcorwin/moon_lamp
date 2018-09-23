@@ -1,5 +1,5 @@
 MOON_LAMP_CONFIG = {
-  'pins': [2, 27]
+  'pins': [2, 3, 4, 17, 27, 22]
 }
 
 FILE_PATHS = {

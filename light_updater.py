@@ -13,6 +13,7 @@ import RPi.GPIO as GPIO
 LIGHT_FILE = config.FILE_PATHS['lights']
 PINS = config.MOON_LAMP_CONFIG['pins']
 
+GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 def switch_led(pinNum, status):
@@ -23,12 +24,12 @@ def switch_led(pinNum, status):
   else:
     GPIO.output(pinNum,GPIO.LOW)
     print(pinNum, "set to off")
-  GPIO.cleanup(pinNum)
 
 with open(LIGHT_FILE) as f:
   data = json.load(f)
   lights_status = data['pin_status']
   lights_on = data['on']
+  print(lights_on)
 
 if lights_on == True:
   for idx, pin in enumerate(PINS):

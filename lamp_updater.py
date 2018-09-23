@@ -42,11 +42,5 @@ def get_phase_num(phase_mode):
     out = get_current_phase()
   return(out)
 
-def get_led_status(lamp_mode):
-  lamp_mode = lamp_mode.lower()
-  if lamp_mode == 'on':
-    
-    
-  
 chk = get_phase_num(phase_mode)
 print(chk)
