@@ -25,16 +25,17 @@ def switch_led(pinNum, status):
     GPIO.output(pinNum,GPIO.LOW)
     print(pinNum, "set to off")
 
-with open(LIGHT_FILE) as f:
-  data = json.load(f)
-  lights_status = data['pin_status']
-  lights_on = data['on']
-  print(lights_on)
-
-if lights_on == True:
-  for idx, pin in enumerate(PINS):
-    status = lights_status[idx]
-    switch_led(pin, status)
-else:
-  for pin in PINS:
-    switch_led(pin, "off")
+def update_lights():
+  with open(LIGHT_FILE) as f:
+    data = json.load(f)
+    lights_status = data['pin_status']
+    lights_on = data['on']
+    print(lights_on)
+  
+  if lights_on == True:
+    for idx, pin in enumerate(PINS):
+      status = lights_status[idx]
+      switch_led(pin, status)
+  else:
+    for pin in PINS:
+      switch_led(pin, "off")

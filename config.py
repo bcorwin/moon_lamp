@@ -22,3 +22,14 @@ LAMP_PHASES = {
   '10': ['on', 'on', 'off', 'off', 'off', 'off'],
   '11': ['on', 'off', 'off', 'off', 'off', 'off']
 }
+
+PHASE_NAMES = {
+  'new': '0',
+  'waxing_crescent': '1',
+  'first_quarter': '3',
+  'waxing_gibbous': '4',
+  'full': '6',
+  'waning_gibbous': '7',
+  'last_quarter': '9',
+  'waning_crescent': '11'
+}

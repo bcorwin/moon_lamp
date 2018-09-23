@@ -46,6 +46,9 @@ def get_phase_num(phase_mode):
 if phase_mode == 'current':
   phase_num = get_current_phase()
   pin_status = config.LAMP_PHASES[phase_num]
+elif phase_mode == 'hold':
+  phase_num = config.PHASE_NAMES[phase_phase]
+  pin_status = config.LAMP_PHASES[phase_num]
 else:
   # ERROR, phase_mode not defined
   pin_status = ['on', 'off', 'on', 'off', 'on', 'off']
