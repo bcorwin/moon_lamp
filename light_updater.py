@@ -39,3 +39,5 @@ def update_lights():
   else:
     for pin in PINS:
       switch_led(pin, "off")
+
+update_lights()
