@@ -42,5 +42,26 @@ def get_phase_num(phase_mode):
     out = get_current_phase()
   return(out)
 
-chk = get_phase_num(phase_mode)
-print(chk)
+# Update pin_status in lights.json
+if phase_mode == 'current':
+  phase_num = get_current_phase()
+  pin_status = config.LAMP_PHASES[phase_num]
+else:
+  # ERROR, phase_mode not defined
+  pin_status = ['on', 'off', 'on', 'off', 'on', 'off']
+
+# Update lamp status in lights.json
+if lamp_mode == 'on':
+  light_on = True
+elif lamp_mode == 'off':
+  light_on = False
+else:
+  # ERROR, lamp_mode not defined
+  pin_status = ['off', 'on', 'off', 'on', 'off', 'on'] 
+  light_on = True
+  
+lights_data = {"pin_status": pin_status, "on": light_on}
+
+with open(config.FILE_PATHS['lights'], 'w') as outfile:
+    json.dump(lights_data, outfile)
+  

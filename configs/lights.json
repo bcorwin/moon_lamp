@@ -1,4 +1,1 @@
-{
-  "pin_status":["on", "on", "on", "on", "on", "on"],
-  "on": true
-}
+{"pin_status": ["off", "on", "on", "on", "on", "on"], "on": true}
