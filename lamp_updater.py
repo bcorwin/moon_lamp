@@ -63,7 +63,9 @@ else:
   pin_status = ['off', 'on', 'off', 'on', 'off', 'on'] 
   light_on = True
   
-lights_data = {"pin_status": pin_status, "on": light_on}
+lights_data = {"pin_status": pin_status, "on": light_on, "cur_phase": phase_num}
+
+print(lights_data)
 
 with open(config.FILE_PATHS['lights'], 'w') as outfile:
     json.dump(lights_data, outfile)
