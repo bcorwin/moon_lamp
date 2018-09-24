@@ -4,6 +4,12 @@
 Created on Thu May 31 14:57:08 2018
 
 @author: Ben Corwin
+
+To do: track rising and set times (in UTC) so lamp mode with_moon works
+To do: track phase start/end times (in UTC) so lamp mode with_change works
+To do: don't store date because that could get messed up in tz conversion
+Use the tz parameter from the returned data to convert times to UTC.
+^ Also need to use isdst to adjust
 """
 
 import config
