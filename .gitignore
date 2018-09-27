@@ -1,4 +1,4 @@
 *.pyc
 *.pyo
-configs/*
+/configs/*
 -configs/moon_lamp.schema.json
