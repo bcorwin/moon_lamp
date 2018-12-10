@@ -34,3 +34,22 @@ PHASE_NAMES = {
   'last_quarter': '9',
   'waning_crescent': '11'
 }
+
+ERROR_CODES = {
+  0: {
+    'desc': 'ERROR: phase_mode not defined',
+    'vals': ['on', 'off', 'on', 'off', 'on', 'off']
+  },
+  1: {
+    'desc': 'ERROR: moon_times not available',
+    'vals': ['off', 'off', 'on', 'on', 'off', 'off']
+  },
+  2: {
+    'desc': 'ERROR: lamp_mode not defined',
+    'vals': ['off', 'on', 'off', 'on', 'off', 'on']
+  },
+  3: {
+    'desc': 'ERROR: Invalid phase number. Is moon info updated?',
+    'vals': ['off', 'on', 'on', 'on', 'on', 'off']
+  },
+}

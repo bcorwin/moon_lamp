@@ -12,6 +12,12 @@ import datetime
 
 MOON_INFO_FILE = config.FILE_PATHS['moon_info']
 MOON_TIMES_FILE = config.FILE_PATHS['moon_times_file']
+DISPLAY_ERROR = False
+
+def display_error(err_code):
+  error = config.ERROR_CODES[err_code]
+  print(error['desc'])
+  return((error['vals'], True))
 
 with open(config.FILE_PATHS['moon_lamp'], 'r') as f:
   data = json.load(f)
@@ -58,17 +64,24 @@ def get_phase_num(phase_mode):
   if phase_mode == 'current':
     out = get_current_phase()
   return(out)
-
+  
+def get_pin_status(phase_num):
+  if phase_num == -1:
+    pin_status, DISPLAY_ERROR = display_error(3)
+  else:
+    pin_status = config.LAMP_PHASES[phase_num]
+  return(pin_status) 
+  
 # Update pin_status in lights.json
 if phase_mode == 'current':
   phase_num = get_current_phase()
-  pin_status = config.LAMP_PHASES[phase_num]
+  pin_status = get_pin_status(phase_num)
 elif phase_mode == 'hold':
   phase_num = config.PHASE_NAMES[phase_phase]
-  pin_status = config.LAMP_PHASES[phase_num]
+  pin_status = get_pin_status(phase_num)
 else:
   # ERROR: phase_mode not defined
-  pin_status = ['on', 'off', 'on', 'off', 'on', 'off']
+  pin_status,DISPLAY_ERROR = display_error(0)
 
 # Update lamp status in lights.json
 if lamp_mode == 'on':
@@ -79,10 +92,12 @@ elif lamp_mode == 'with_moon':
   light_on = False if CURRENT_PHEN == 'S' else True
   if CURRENT_PHEN not in ['S', 'R']:
     # ERROR: moon_times not available
-    pin_status = ['off', 'off', 'on', 'on', 'off', 'off']  
+    pin_status, DISPLAY_ERROR = display_error(1)
 else:
   # ERROR: lamp_mode not defined
-  pin_status = ['off', 'on', 'off', 'on', 'off', 'on'] 
+  pin_status,DISPLAY_ERROR = display_error(2)
+
+if DISPLAY_ERROR == True:
   light_on = True
   
 lights_data = {"pin_status": pin_status, "on": light_on, "cur_phase": phase_num}
