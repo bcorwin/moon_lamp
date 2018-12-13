@@ -1,4 +1,8 @@
 *.pyc
 *.pyo
 /configs/*
--configs/moon_lamp.schema.json
+configs/moon_lamp.schema.json
+
+.flaskenv
+venv
+app.db
