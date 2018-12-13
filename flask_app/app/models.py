@@ -6,7 +6,7 @@ class ErrorCode(db.Model):
     light_pattern = db.Column(db.Integer, unique=True)
 
     def __repr__(self):
-        return(f"<Error: {self.description} (ErrorCode = {self.id})>")
+        return(f"<Error: {self.description} (ErrorCode={self.id})>")
 
 class MoonPhase(db.Model):
     id = db.Column(db.Integer, primary_key=True)
