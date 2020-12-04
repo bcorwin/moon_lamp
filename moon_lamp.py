@@ -49,6 +49,8 @@ PHASE_NUMBERS = {
     11: ['on', 'off', 'off', 'off', 'off', 'off']
 }
 
+REVERSE = True
+
 
 def get_phase_fraction(current_datetime=dt.datetime.utcnow()):
     # https://minkukel.com/en/various/calculating-moon-phase/
@@ -92,7 +94,8 @@ def set_lights(phase_number):
         for i in range(len(light_status)):
             switch = light_status[i]
             leds = (255, 255, 255) if switch == "on" else (0, 0, 0)
-            PIXELS[i] = leds
+            led_idx = i if not REVERSE else 11 - i
+            PIXELS[led_idx] = leds
         PIXELS.show()
 
     return None
