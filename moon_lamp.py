@@ -19,7 +19,7 @@ if not PRINT_ONLY:
     num_pixels = 6
     pixel_order = neopixel.GRB
 
-    PIXELS = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=pixel_order)
+    PIXELS = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=1, auto_write=False, pixel_order=pixel_order)
 
 PHASE_NAMES = [
     ("New", 0.033863193308711),
