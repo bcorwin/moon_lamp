@@ -94,7 +94,7 @@ def set_lights(phase_number):
         for i in range(len(light_status)):
             switch = light_status[i]
             leds = (255, 255, 255) if switch == "on" else (0, 0, 0)
-            led_idx = i if not REVERSE else 11 - i
+            led_idx = i if not REVERSE else 6 - i
             PIXELS[led_idx] = leds
         PIXELS.show()
 
