@@ -26,10 +26,10 @@ def get_phase(phase_mode, phase_number):
 @click.command()
 @click.option('--phase-mode', help='How to determine which phase to show')
 @click.option('--phase-number', help='Internal phase number (0-11)')
-@click.option('--cycle-length', default=5, help='How long (in seconds) to to stay on a phase (only used in cycle mode)')
-def set_lamp(phase_mode, phase_number, cycle_length):
+@click.option('--phase-length', default=5, help='How long (in seconds) to to stay on a phase (only used in cycle mode)')
+def set_lamp(phase_mode, phase_number, phase_length):
     if phase_mode == 'cycle':
-        sleep_len = int(cycle_length)
+        sleep_len = int(phase_length)
     elif phase_mode == 'current':
         sleep_len = 43200
     else:
