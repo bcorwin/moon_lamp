@@ -6,3 +6,4 @@ configs/moon_lamp.schema.json
 .flaskenv
 venv
 app.db
+.idea/
