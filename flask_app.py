@@ -76,12 +76,9 @@ def moon_lamp_switch():
         current_pid = int(f.read())
 
     try:
-        print(current_pid)
-        current_status = check_output(["ps", "-p", str(current_pid)]).decode()
-
+        current_status = check_output(["ps", "-f", "-p",  str(current_pid)]).decode()
     except CalledProcessError:
         current_status = ""
-        print("Not running")
 
     phase_mode = re.search(r"--phase-mode=([^\s]+)", current_status)
     if phase_mode:
