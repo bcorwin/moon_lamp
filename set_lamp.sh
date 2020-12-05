@@ -12,4 +12,5 @@ then
     true
 else
     sudo python3 set_lamp.py --phase-mode=fixed --phase-number=-1 & echo $! > moonlamp.pid
+    exit 1
 fi
