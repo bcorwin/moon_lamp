@@ -1,7 +1,7 @@
 #!/bin/bash
 
-sudo pkill -F moonlamp.pid
 sudo pkill -F setlamp.pid
+sudo pkill -F moonlamp.pid
 
 echo $$ > setlamp.pid
 sudo python3 set_lamp.py "$@" & echo $! > moonlamp.pid
