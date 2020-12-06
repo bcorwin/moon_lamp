@@ -18,6 +18,9 @@ class SwitchForm(FlaskForm):
 
 
 home_template = '''
+<head>
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
 {% if phase_mode %} Current phase_mode: {{ phase_mode }} <br> {% endif %}
 {% if phase_number %} Current phase_number: {{ phase_number }} <br> {% endif %}
 {% if phase_length %} Current phase_length: {{ phase_length }} <br> {% endif %}
@@ -33,7 +36,7 @@ home_template = '''
 
 
 def get_cmd(phase_mode, phase_number=None, phase_length=None):
-    cmd = ["sudo", "./set_lamp.sh"]
+    cmd = ["./set_lamp.sh"]
     if phase_mode == "off":
         phase_mode = "fixed"
         phase_number = "0"
