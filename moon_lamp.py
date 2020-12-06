@@ -88,6 +88,8 @@ def set_lights(phase_number):
     light_status = get_light_status(phase_number)
     if PRINT_ONLY:
         with open("lamp.txt", "w") as f:
+            f.write(str(dt.datetime.now()))
+            f.write(" ")
             f.write(", ".join(light_status))
             f.write("\n")
     else:
