@@ -4,7 +4,12 @@
 CPID=$(pgrep -P $(cat moonlamp.pid))
 sudo kill -s TERM $(cat setlamp.pid)
 sudo kill -s TERM $(cat moonlamp.pid)
-sudo kill -s TERM $CPID
+if [ -z "$CPID" ]
+then
+    true
+else
+    sudo kill -s TERM $CPID
+fi
 
 # Make sure the process was actually killed
 sleep .5
