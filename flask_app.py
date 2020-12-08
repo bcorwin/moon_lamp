@@ -14,7 +14,7 @@ class SwitchForm(FlaskForm):
     phase_mode = SelectField("Phase mode:", choices=["current", "fixed", "cycle", "off"])
     phase_number = SelectField("Phase number:", choices=[None] + list(range(12)))
     phase_length = IntegerField("Phase length (seconds):")
-    lamp_mode = SelectField("Lamp mode:", choices=["day_only", "on", "timer"])
+    lamp_mode = SelectField("Lamp mode:", choices=["day_only", "on", "with_moon", "timer"])
     timer_length = IntegerField("Timer length (hours):")
     submit = SubmitField('Submit')
 
