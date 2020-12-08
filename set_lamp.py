@@ -73,8 +73,8 @@ def get_moon_times(current_dt=dt.now()):
 
 
 @click.command()
-@click.option('--phase-mode', help='How to determine which phase to show')
-@click.option('--phase-number', help='Internal phase number (0-11)')
+@click.option('--phase-mode', default="current", help='How to determine which phase to show')
+@click.option('--phase-number', default=6, help='Internal phase number (0-11)')
 @click.option('--phase-length', default=5, help='How long (in seconds) to to stay on a phase (only used in cycle mode)')
 @click.option('--lamp-mode', default="on", help='How should the lamp turn on')
 @click.option('--timer-length', default=1, help='In hours, how long the lamp should stay on (used in lamp mode= timer')
