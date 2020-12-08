@@ -9,3 +9,5 @@ app.db
 .idea/
 lamp.txt
 .env
+*.pid
+*.log
