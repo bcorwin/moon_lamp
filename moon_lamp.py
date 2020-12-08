@@ -1,10 +1,3 @@
-# TODO: daily cron job to save phase number to a file
-# TODO: daily cron job to turn lights on to above phase
-# TODO: daily cron job to turn light off
-# TODO: (future) sync on/off jobs to moon rise/set
-# TODO: (future) flask app to set modes
-# TODO: (future) phase modes - current, fixed phase, cycle
-# TODO: (future) light modes - on, off, with moon, on during time period
 import datetime as dt
 try:
     import board
