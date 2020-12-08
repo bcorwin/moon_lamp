@@ -7,5 +7,5 @@ configs/moon_lamp.schema.json
 venv
 app.db
 .idea/
-*.pid
 lamp.txt
+.env
