@@ -15,7 +15,7 @@ load_dotenv(override=True)
 def get_phase_fraction(current_datetime=datetime.utcnow()):
     # https://minkukel.com/en/various/calculating-moon-phase/
     lunar_cycle = 29.53058770576 * 24 * 3600  # Days to seconds
-    first_new = datetime(2000, 1, 6, 18, 14)
+    first_new = datetime(2020, 12, 14, 16, 16)
 
     phase_fraction = ((current_datetime - first_new).total_seconds() % lunar_cycle) / lunar_cycle
 
@@ -27,8 +27,8 @@ def get_phase_number(phase_fraction):
     :param phase_fraction: The fraction of the moon that's illuminated (0 to 1)
     :return: The phase number for the lamp (which can display 12 different phases) 0 to 11
     """
-    assert 0 <= phase_fraction <=1, f"Invalid phase_fraction: {phase_fraction}"
-    phase_number = round(12*phase_fraction) % 12
+    assert 0 <= phase_fraction <= 1, f"Invalid phase_fraction: {phase_fraction}"
+    phase_number = round(12 * phase_fraction) % 12
     return phase_number
 
 
@@ -58,7 +58,7 @@ def get_moon_times(current_dt=datetime.now()):
     results = sorted(results, key=lambda x: x[1])
 
     for i in range(len(results)):
-        if results[i][1] < datetime.now() <= results[i + 1][1]:
+        if results[i][1] < current_dt <= results[i + 1][1]:
             if results[i][0] == "rise":
                 moon_up = True
                 moon_rise = results[i][1]
@@ -109,7 +109,7 @@ class MoonLamp:
 
     def _get_phase(self, phase_mode, phase_number):
         if phase_mode == 'current':
-            phase_fraction =get_phase_fraction()
+            phase_fraction = get_phase_fraction()
             phase_number = get_phase_number(phase_fraction)
         elif phase_mode == 'fixed':
             phase_number = int(phase_number)
@@ -141,7 +141,7 @@ class MoonLamp:
         self.pixels.fill((0, 0, 0))
         return None
 
-    def set_lamp(self, phase_mode, phase_number=None, phase_length=None, lamp_mode=None, timer_length=None):
+    def set_lamp(self, phase_mode="current", lamp_mode="on", phase_number=None, phase_length=None, timer_length=None):
         if phase_mode == 'cycle':
             sleep_len = int(phase_length)
         elif phase_mode in ('current', 'fixed'):
