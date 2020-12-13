@@ -91,12 +91,14 @@ def moon_lamp_switch():
     form = SwitchForm()
 
     # Get current status
-    with open("moonlamp.pid", "r") as f:
-        current_pid = int(f.read())
-
-    try:
-        current_status = check_output(["ps", "-f", "-p",  str(current_pid)]).decode()
-    except CalledProcessError:
+    if os.path.exists("moonlamp.pid"):
+        with open("moonlamp.pid", "r") as f:
+            current_pid = int(f.read())
+        try:
+            current_status = check_output(["ps", "-f", "-p",  str(current_pid)]).decode()
+        except CalledProcessError:
+            current_status = ""
+    else:
         current_status = ""
 
     current_values = {}
