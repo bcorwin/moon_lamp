@@ -130,7 +130,7 @@ class MoonLamp:
         else:
             for i in range(len(light_status)):
                 switch = light_status[i]
-                leds = (255, 255, 255) if switch == "on" else (0, 0, 0)
+                leds = (255, 255, 255) if switch == "on" else (0, 0, 50)
                 led_idx = i if not self.reverse_leds else 5 - i
                 self.pixels[led_idx] = leds
             self.pixels.show()
