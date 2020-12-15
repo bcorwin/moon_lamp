@@ -4,11 +4,6 @@ from requests import get
 from src.lamp import Lamp
 from dotenv import load_dotenv
 from datetime import timedelta, time, datetime
-try:
-    import board
-    import neopixel
-except ModuleNotFoundError:
-    pass
 
 load_dotenv(override=True)
 
@@ -99,7 +94,7 @@ class MoonLamp(Lamp):
 
     def _get_phase(self, phase_mode, phase_number):
         if phase_mode == 'current':
-            phase_fraction =get_phase_fraction()
+            phase_fraction = get_phase_fraction()
             phase_number = get_phase_number(phase_fraction)
         elif phase_mode == 'fixed':
             phase_number = int(phase_number)
