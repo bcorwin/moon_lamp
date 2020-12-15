@@ -22,13 +22,13 @@ fi
 
 # Start the new prcoess
 echo $$ > setlamp.pid
-sudo  python3 set_lamp.py "$@" & echo $! > moonlamp.pid
+sudo  python3 -m src.set_lamp "$@" & echo $! > moonlamp.pid
 
 # If above fails, set lamp to a failed pattern
 if  wait $(<"moonlamp.pid")
 then
     true
 else
-    sudo python3 set_lamp.py --phase-mode=fixed --phase-number=-1 & echo $! >moonlamp.pid
+    sudo python3 -m src.set_lamp --phase-mode=fixed --phase-number=-1 & echo $! >moonlamp.pid
     exit 1
 fi

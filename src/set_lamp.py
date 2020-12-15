@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 import os
 import click
-import moon_lamp as ml
+from src import moon_lamp as ml
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-MOON_LAMP = ml.MoonLamp(print_only=os.getenv("PRINT_ONLY"), reverse_leds=os.getenv("REVERSE_LEDS"))
+MOON_LAMP = ml.MoonLamp(
+    print_only=os.getenv("PRINT_ONLY"),
+    reverse_leds=os.getenv("REVERSE_LEDS"),
+    num_leds=int(os.getenv("NUM_LEDS"))
+)
 
 
 @click.command()

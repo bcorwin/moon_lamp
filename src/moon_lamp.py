@@ -1,6 +1,7 @@
 import os
 from time import sleep
 from requests import get
+from src.lamp import Lamp
 from dotenv import load_dotenv
 from datetime import timedelta, time, datetime
 try:
@@ -73,22 +74,11 @@ def get_moon_times(current_dt=datetime.now()):
     return moon_rise, moon_set, moon_up
 
 
-class MoonLamp:
-    def __init__(self, print_only, reverse_leds):
-        if not print_only:
-            pixel_pin = board.D18
-            num_pixels = 6
-            pixel_order = neopixel.GRB
-
-            self.pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=1,
-                                            auto_write=False, pixel_order=pixel_order)
-
-        self.on_hour = 8
-        self.off_hour = 20
-        self.current_phase = 0
-        self.reverse_leds = reverse_leds
-        self.print_only = print_only
-        self.phase_numbers = {
+class MoonLamp(Lamp):
+    on_hour = 8
+    off_hour = 20
+    current_phase = 0
+    phase_numbers = {
             -1: ['on', 'off', 'on', 'off', 'on', 'off'],
             0: ['off', 'off', 'off', 'off', 'off', 'off'],
             1: ['off', 'off', 'off', 'off', 'off', 'on'],
@@ -121,34 +111,18 @@ class MoonLamp:
 
     def _set_lights(self, phase_number):
         light_status = self._get_light_status(phase_number)
-        if self.print_only:
-            with open("lamp.txt", "w") as f:
-                f.write(str(datetime.now()))
-                f.write(" ")
-                f.write(", ".join(light_status))
-                f.write("\n")
-        else:
-            for i in range(len(light_status)):
-                switch = light_status[i]
-                leds = (255, 255, 255) if switch == "on" else (0, 0, 50)
-                led_idx = i if not self.reverse_leds else 5 - i
-                self.pixels[led_idx] = leds
-            self.pixels.show()
-            self.current_phase = phase_number
+        colors = [(255, 255, 255) if s == "on" else (0, 0, 50) for s in light_status]
+        self.set_leds(colors)
+        self.current_phase = phase_number
         return None
 
-    def _lights_off(self):
-        self.pixels.fill((0, 0, 0))
-        self.pixels.show()
-        return None
-
-    def set_lamp(self, phase_mode, phase_number=None, phase_length=None, lamp_mode=None, timer_length=None):
+    def set_lamp(self, phase_mode, phase_number=None, phase_length=None, lamp_mode="on", timer_length=None):
         if phase_mode == 'cycle':
             sleep_len = int(phase_length)
         elif phase_mode in ('current', 'fixed'):
             sleep_len = 60 * 5
         elif phase_mode == 'off':
-            self._lights_off()
+            self.leds_off()
             return None
         else:
             raise ValueError(f"Invalid value for phase_mode: {phase_mode}")
@@ -202,7 +176,7 @@ class MoonLamp:
                     on_at, off_at, _ = get_moon_times()
                     print(f"Next on at: {on_at}")
                     print(f"Next off at: {off_at}")
-                self._lights_off()
+                self.leds_off()
                 lamp_on = False
             if sleep_len:
                 sleep(sleep_len)
