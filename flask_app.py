@@ -43,13 +43,7 @@ home_template = '''
 
 
 def get_cmd(phase_mode, lamp_mode, phase_number=None, phase_length=None, timer_length=None):
-    cmd = ["./set_lamp.sh"]
-    if phase_mode == "off":
-        phase_mode = "fixed"
-        phase_number = "0"
-        phase_length = None
-
-    cmd += [f"--phase-mode={phase_mode}"]
+    cmd = ["./set_lamp.sh", f"--phase-mode={phase_mode}"]
     if phase_number:
         cmd += [f"--phase-number={phase_number}"]
     if phase_length:

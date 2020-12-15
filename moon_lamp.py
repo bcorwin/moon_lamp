@@ -139,6 +139,7 @@ class MoonLamp:
 
     def _lights_off(self):
         self.pixels.fill((0, 0, 0))
+        self.pixels.show()
         return None
 
     def set_lamp(self, phase_mode, phase_number=None, phase_length=None, lamp_mode=None, timer_length=None):
@@ -146,6 +147,9 @@ class MoonLamp:
             sleep_len = int(phase_length)
         elif phase_mode in ('current', 'fixed'):
             sleep_len = 60 * 5
+        elif phase_mode == 'off':
+            self._lights_off()
+            return None
         else:
             raise ValueError(f"Invalid value for phase_mode: {phase_mode}")
 
