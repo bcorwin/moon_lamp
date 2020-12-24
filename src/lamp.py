@@ -1,9 +1,16 @@
+import colr
 from datetime import datetime
 try:
     import board
     import neopixel
 except ModuleNotFoundError:
     pass
+
+
+def contrast_color(color):
+    color = tuple(int(color.lstrip("#")[i:i+2], 16) for i in (0, 2, 4))
+    luminance = (0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2]) / 255
+    return "#000000" if luminance > 0.5 else "#FFFFFF"
 
 
 class Lamp:
@@ -27,14 +34,18 @@ class Lamp:
     def set_leds(self, colors):
         assert self.num_leds == len(colors), f"Expecting {self.num_leds} colors not {len(colors)}"
 
-        if self.print_only:
-            colors = ['#%02x%02x%02x' % c for c in colors]
-            with open("./lamp.txt", "w") as f:
-                f.write(str(datetime.now()))
-                f.write("\t")
-                f.write("\t".join(colors))
-                f.write("\n")
-        else:
+        colors = ['#%02x%02x%02x' % c for c in colors]
+        print_string = [str(datetime.now())]
+        print_string.extend([colr.color(c, fore=c, back=contrast_color(c)) for c in colors])
+        print_string = "\t".join(print_string)
+        print(print_string)
+        with open("./lamp.txt", "w") as f:
+            f.write(str(datetime.now()))
+            f.write("\t")
+            f.write("\t".join(colors))
+            f.write("\n")
+
+        if not self.print_only:
             for i in range(len(colors)):
                 color = colors[i]
                 led_idx = i if not self.reverse_leds else self.num_leds - i - 1
