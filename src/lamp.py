@@ -34,15 +34,15 @@ class Lamp:
     def set_leds(self, colors):
         assert self.num_leds == len(colors), f"Expecting {self.num_leds} colors not {len(colors)}"
 
-        colors = ['#%02x%02x%02x' % c for c in colors]
+        hex_colors = ['#%02x%02x%02x' % c for c in colors]
         print_string = [str(datetime.now())]
-        print_string.extend([colr.color(c, fore=c, back=contrast_color(c)) for c in colors])
+        print_string.extend([colr.color(c, fore=c, back=contrast_color(c)) for c in hex_colors])
         print_string = "\t".join(print_string)
         print(print_string)
         with open("./lamp.txt", "w") as f:
             f.write(str(datetime.now()))
             f.write("\t")
-            f.write("\t".join(colors))
+            f.write("\t".join(hex_colors))
             f.write("\n")
 
         if not self.print_only:
