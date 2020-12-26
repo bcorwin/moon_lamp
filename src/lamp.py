@@ -1,9 +1,8 @@
 import os
 import colr
-from time import sleep
 from requests import get
 from dotenv import load_dotenv
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
 try:
     import board
     import neopixel
