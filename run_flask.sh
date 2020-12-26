@@ -1,1 +1,1 @@
-python3 flask_app.py &>> flask.log &
+python3 flask_app.py &>> flask.log & echo $! > flaskapp.pid
