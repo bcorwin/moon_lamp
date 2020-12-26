@@ -29,6 +29,7 @@ if  wait $(<"moonlamp.pid")
 then
     true
 else
+    # TODO: Confirm this is working
     sudo python3 -m src.set_lamp -s error_screen & echo $! >moonlamp.pid
     exit 1
 fi

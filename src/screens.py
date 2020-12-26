@@ -60,9 +60,6 @@ class Screen:
 
 
 class Screens:
-    # TODO: move "lamp mode" here (day only, with moon, on, off, timer)
-    # TODO: move "cycle" phase mode to here (can use screens for this)
-    # TODO: remove "phase mode" and use phase_number (if None do current) to do that (e.g. fixed if it's not None)
     on_hour = 8
     off_hour = 20
 

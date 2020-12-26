@@ -11,6 +11,7 @@ app.config['SECRET_KEY'] = os.urandom(24)
 
 
 class SwitchForm(FlaskForm):
+    # TODO: add screen selection (multi select)
     mode = SelectField("Mode:", choices=["on", "off", "timer", "day_only", "with_moon"])
     delay = IntegerField("Screen length (s):")
     timer_length = IntegerField("Timer length (hours):")
@@ -75,6 +76,7 @@ def moon_lamp_switch():
     form = SwitchForm()
 
     # Get current status
+    # TODO: rename this file
     if os.path.exists("moonlamp.pid"):
         with open("moonlamp.pid", "r") as f:
             current_pid = int(f.read())
