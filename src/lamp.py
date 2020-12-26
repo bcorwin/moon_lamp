@@ -73,13 +73,7 @@ class Lamp:
         print_string = "\t".join(print_string)
         print(print_string)
         with open("./lamp.txt", "w") as f:
-            f.write(str(datetime.now()))
-            f.write("\t")
-            f.write("\t".join(hex_colors))
-            if extra_info:
-                f.write("\t")
-                f.write(extra_info)
-            f.write("\n")
+            f.write(print_string)
 
         if not self.print_only:
             for i in range(len(colors)):
