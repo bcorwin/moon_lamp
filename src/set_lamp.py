@@ -1,26 +1,21 @@
 #!/usr/bin/env python3
-import os
 import click
-from src import moon_lamp as ml
-from dotenv import load_dotenv
-
-load_dotenv(override=True)
-
-MOON_LAMP = ml.MoonLamp(
-    print_only=os.getenv("PRINT_ONLY") == "True",
-    reverse_leds=os.getenv("REVERSE_LEDS") == "True",
-    num_leds=int(os.getenv("NUM_LEDS"))
-)
+from src.screens import Screens
+import src.possible_screens as ps
 
 
 @click.command()
-@click.option('--phase-mode', default="current", help='How to determine which phase to show')
-@click.option('--phase-number', default=6, help='Internal phase number (0-11)')
-@click.option('--phase-length', default=5, help='How long (in seconds) to to stay on a phase (only used in cycle mode)')
-@click.option('--lamp-mode', default="on", help='How should the lamp turn on')
-@click.option('--timer-length', default=1, help='In hours, how long the lamp should stay on (used in lamp mode= timer')
-def set_lamp(phase_mode, phase_number, phase_length, lamp_mode, timer_length):
-    MOON_LAMP.set_lamp(phase_mode, phase_number, phase_length, lamp_mode, timer_length)
+@click.option('-s', '--screen', multiple=True,
+              default=["feels_like_screen", "sunniness_screen", "current_moon_screen"],
+              help='Screen to show (see src/possible_screens.py')
+@click.option('-d', '--delay', default=5, help='How long, in seconds, to show each screen (default=5)')
+@click.option('-m', '--mode', default="day_only", help='Which mode to use (default=day_only)')
+@click.option('-t', '--timer-length', default=1,
+              help='How long, in hours, to leave the lamp on in timer mode (default=1)')
+def set_lamp(screen, delay, mode, timer_length):
+    screens_to_show = [getattr(ps, s) for s in screen]
+    screens = Screens(screens=screens_to_show, delay=delay)
+    screens.show_screens(mode=mode, timer_length=timer_length)
 
 
 if __name__ == "__main__":

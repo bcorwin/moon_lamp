@@ -11,10 +11,8 @@ app.config['SECRET_KEY'] = os.urandom(24)
 
 
 class SwitchForm(FlaskForm):
-    phase_mode = SelectField("Phase mode:", choices=["current", "fixed", "cycle", "off"])
-    phase_number = SelectField("Phase number:", choices=[None] + list(range(12)))
-    phase_length = IntegerField("Phase length (seconds):")
-    lamp_mode = SelectField("Lamp mode:", choices=["day_only", "on", "with_moon", "timer"])
+    mode = SelectField("Mode:", choices=["on", "off", "timer", "day_only", "with_moon"])
+    delay = IntegerField("Screen length (s):")
     timer_length = IntegerField("Timer length (hours):")
     submit = SubmitField('Submit')
 
@@ -26,31 +24,32 @@ home_template = '''
 {% if current_values %}
 <b>Current</b><br><table>
 {% for k,v in current_values.items() %}
-    <tr><td>{{ k }}</td><td>{{ v }}</td></tr>
+    {% if v %}
+        <tr><td>{{ k }}</td><td>{{ v }}</td></tr>
+    {% endif %}
 {% endfor %}
 </table><hr>
 {% endif %}
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
-    <p>{{ form.phase_mode.label }} {{ form.phase_mode() }}</p>
-    <p>{{ form.phase_number.label }} {{ form.phase_number() }}</p>
-    <p>{{ form.phase_length.label }} {{ form.phase_length() }}</p>
-    <p>{{ form.lamp_mode.label }} {{ form.lamp_mode() }}</p>
+    <p>{{ form.mode.label }} {{ form.mode() }}</p>
+    <p>{{ form.delay.label }} {{ form.delay() }}</p>
     <p>{{ form.timer_length.label }} {{ form.timer_length() }}</p>
     <p>{{ form.submit() }}</p>
 </form>
 '''
 
 
-def get_cmd(phase_mode, lamp_mode, phase_number=None, phase_length=None, timer_length=None):
-    cmd = ["./set_lamp.sh", f"--phase-mode={phase_mode}"]
-    if phase_number:
-        cmd += [f"--phase-number={phase_number}"]
-    if phase_length:
-        cmd += [f"--phase-length={phase_length}"]
-    cmd += [f"--lamp-mode={lamp_mode}"]
+def get_cmd(screens=[], mode=None, delay=None, timer_length=None):
+    cmd = ["./set_lamp.sh"]
+    for screen in screens:
+        cmd += ["-s", screen]
+    if mode:
+        cmd += ["--mode", mode]
+    if delay:
+        cmd += ["--delay", delay]
     if timer_length:
-        cmd += [f"--timer-length={timer_length}"]
+        cmd += ["--timer-length", timer_length]
 
     return cmd
 
@@ -61,22 +60,13 @@ def moon_lamp_switch():
         # needs validation
         form = request.form
         # Required
-        phase_mode = form["phase_mode"]
-        timer_length = form["timer_length"]
+        mode = form.get("mode", None)
+        delay = form.get("delay", None)
+        timer_length = form.get("timer_length", None)
 
-        phase_number = form["phase_number"]
-        if phase_number in ('', 'None'):
-            phase_number = None
-        phase_length = form["phase_length"]
-        if phase_length in ('', 'None'):
-            phase_length = None
-        lamp_mode = form["lamp_mode"]
-        if timer_length in ('', 'None'):
-            timer_length = None
-
-        cmd = get_cmd(phase_mode, lamp_mode, phase_number, phase_length, timer_length)
+        cmd = get_cmd(mode=mode, delay=delay, timer_length=timer_length)
         process = Popen(cmd)
-        sleep(1)
+        sleep(2)
         res = process.poll()
         if res is not None and res != 0:
             return "Unknown error, try again"
@@ -96,25 +86,10 @@ def moon_lamp_switch():
         current_status = ""
 
     current_values = {}
-    phase_mode = re.search(r"--phase-mode=([^\s]+)", current_status)
-    if phase_mode:
-        current_values["phase_mode"] = phase_mode.group(1)
-
-    phase_number = re.search(r"--phase-number=([^\s]+)", current_status)
-    if phase_number:
-        current_values["phase_number"] = phase_number.group(1)
-
-    phase_length = re.search(r"--phase-length=([^\s]+)", current_status)
-    if phase_length:
-        current_values["phase_length"] = phase_length.group(1)
-
-    lamp_mode = re.search(r"--lamp-mode=([^\s]+)", current_status)
-    if lamp_mode:
-        current_values["lamp_mode"] = lamp_mode.group(1)
-
-    timer_length = re.search(r"--timer-length=([^\s]+)", current_status)
-    if timer_length:
-        current_values["timer_length"] = timer_length.group(1)
+    for key in ["mode", "delay", "timer-length"]:
+        value = re.search(rf"--{key} ([^\s]+)", current_status)
+        if value:
+            current_values[key] = value.group(1)
 
     return render_template_string(home_template, form=form, current_values=current_values)
 

@@ -29,6 +29,6 @@ if  wait $(<"moonlamp.pid")
 then
     true
 else
-    sudo python3 -m src.set_lamp --phase-mode=fixed --phase-number=-1 & echo $! >moonlamp.pid
+    sudo python3 -m src.set_lamp -s error_screen & echo $! >moonlamp.pid
     exit 1
 fi
