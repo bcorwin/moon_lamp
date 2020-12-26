@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 MOON_LAMP = ml.MoonLamp(
-    print_only=os.getenv("PRINT_ONLY"),
-    reverse_leds=os.getenv("REVERSE_LEDS"),
+    print_only=os.getenv("PRINT_ONLY") == "True",
+    reverse_leds=os.getenv("REVERSE_LEDS") == "True",
     num_leds=int(os.getenv("NUM_LEDS"))
 )
 
