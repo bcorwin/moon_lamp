@@ -122,6 +122,7 @@ class MoonLamp(Lamp):
 
 
 class WeatherLamp(Lamp):
+    # TODO: find a way to flash between current and next hour/two hours/...
     api_key = os.getenv("OPEN_WEATHER_KEY")
     lat = os.getenv("LAT")
     lon = os.getenv("LON")
