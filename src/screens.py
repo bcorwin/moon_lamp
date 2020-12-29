@@ -48,6 +48,13 @@ def get_moon_times(current_dt=datetime.now()):
     return moon_rise, moon_set, moon_up
 
 
+def sleep_until(dt):
+    sleep_length = (dt - datetime.now()).total_seconds()
+    sleep_length = max(0, sleep_length)
+    print(f"Sleeping until {dt}")
+    sleep(sleep_length)
+
+
 class Screen:
     def __init__(self, obj, method, *args, **kwargs):
         self.method_to_call = getattr(obj, method)
@@ -60,10 +67,9 @@ class Screen:
 
 
 class Screens:
-    on_hour = 8
-    off_hour = 20
-
     def __init__(self, screens, delay=5):
+        self.on_hour = 8
+        self.off_hour = 21
         self.off = screens[0].off
         self.screens = screens
         self.delay = delay
@@ -125,3 +131,4 @@ class Screens:
                     print(f"Next off at: {off_at}")
                 self.off()
                 lamp_on = False
+                sleep_until(on_at)
