@@ -18,7 +18,7 @@ def contrast_color(color):
     return "#000000" if luminance > 0.5 else "#FFFFFF"
 
 
-def get_phase_fraction(current_datetime=datetime.utcnow()):
+def get_phase_fraction(current_datetime):
     # https://minkukel.com/en/various/calculating-moon-phase/
     lunar_cycle = 29.53058770576 * 24 * 3600  # Days to seconds
     first_new = datetime(2000, 1, 6, 18, 14)
@@ -115,7 +115,7 @@ class MoonLamp(Lamp):
 
     def show_moon(self, phase_number=None):
         if not phase_number:
-            phase_fraction = get_phase_fraction()
+            phase_fraction = get_phase_fraction(datetime.utcnow())
             phase_number = get_phase_number(phase_fraction)
 
         self._set_lights(phase_number)
