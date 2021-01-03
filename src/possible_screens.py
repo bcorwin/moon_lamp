@@ -7,6 +7,7 @@ moon_lamp = lamp.MoonLamp()
 # Weather lamp screens
 feels_like_screen = Screen(weather_lamp, "show_feels_like")
 sunniness_screen = Screen(weather_lamp, "show_sunniness")
+daily_precip_screen = Screen(weather_lamp, "show_precipitation")
 
 # Moon lamp screens
 current_moon_screen = Screen(moon_lamp, "show_moon")

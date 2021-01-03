@@ -1,7 +1,5 @@
 *.pyc
 *.pyo
-/configs/*
-configs/moon_lamp.schema.json
 
 .flaskenv
 venv

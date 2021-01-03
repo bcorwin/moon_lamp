@@ -87,3 +87,16 @@ Example images:
 | *25% sunny (75% cloud cover)* | *50% sunny (50% cloud cover)* |
 | ![](static/sunny_25.png) | ![](static/sunny_50.png) |
 
+## Precipitation
+This screen shows the type of precipitation and the probability for the day.
+Pink means snow and purple means rain and the number of sections that are lit up corresponds to the percent change
+of that happening for the day.
+If the percent of precipitation is very low (<8%), this screen will not show up.
+
+Example images:
+
+| *30% chance of rain* | *60% chance of snow* |
+| :---: | :---: |
+| ![](static/rain_30.png) | ![](static/snow_60.png) |
+
+

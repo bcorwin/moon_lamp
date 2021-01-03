@@ -63,7 +63,7 @@ class Screen:
         self.kwargs = kwargs
 
     def show_screen(self):
-        self.method_to_call(*self.args, **self.kwargs)
+        return self.method_to_call(*self.args, **self.kwargs)
 
 
 class Screens:
@@ -114,8 +114,9 @@ class Screens:
             if on_at <= current_dt < off_at:
                 lamp_on = True
                 for screen in self.screens:
-                    screen.show_screen()
-                    sleep(self.delay)
+                    displayed = screen.show_screen()
+                    if displayed:
+                        sleep(self.delay)
             else:
                 if mode == "timer":
                     self.off()

@@ -119,6 +119,7 @@ class MoonLamp(Lamp):
             phase_number = get_phase_number(phase_fraction)
 
         self._set_lights(phase_number)
+        return True
 
 
 class WeatherLamp(Lamp):
@@ -146,12 +147,18 @@ class WeatherLamp(Lamp):
             return self.weather["current"]["clouds"]
         if metric == "feels_like":
             return self.weather["current"]["feels_like"]
-        if metric == "precipitation":
-            next_hour = self.weather['hourly'][0]  # TODO: Might not always be the first one
-            precip_percent = next_hour.get("pop", 0)
-            if "rain" in next_hour:
+        if metric == "precip":
+            today = self.weather["daily"][0]
+            precip_percent = today.get("pop", 0)
+            if "snow" in today.keys():
+                precip_type = "snow"
+                precip_amount = today.get("snow")
+            elif "rain" in today.keys():
                 precip_type = "rain"
-                precip_volume = next_hour["rain"]["1h"]
+                precip_amount = today.get("rain")
+            else:
+                precip_type = None
+            return {"precip_percent": precip_percent, "precip_type": precip_type, "precip_amount": precip_amount}
         else:
             raise ValueError(f"unknown metric: {metric}")
 
@@ -173,6 +180,7 @@ class WeatherLamp(Lamp):
             for i in range(self.num_leds - len(colors)):
                 colors += [(0, 0, 0)]
         self.set_leds(colors, extra_info=f"cloudiness={cloudiness}")
+        return True
 
     def show_feels_like(self, feels_like=None):
         if feels_like is None:
@@ -201,6 +209,34 @@ class WeatherLamp(Lamp):
             colors = 2*[base_color, (0, 0, 0), base_color]
 
         self.set_leds(colors, extra_info=f"feels_like={feels_like}")
+        return True
+
+    def show_precipitation(self, precip_percent=None, precip_type=None):
+        # TODO: Set color intensity by amount
+        if precip_percent is None and precip_type is None:
+            daily_precip = self._get_weather("precip")
+            precip_percent = daily_precip["precip_percent"]
+            precip_type = daily_precip["precip_type"]
+
+        if precip_type == "snow":
+            base_color = (255, 20, 147)
+        elif precip_type == "rain":
+            base_color = (186, 85, 211)
+        else:
+            base_color = (0, 0, 0)
+
+        full_leds = round(100*precip_percent / (100 / self.num_leds))
+
+        colors = full_leds*[base_color]
+        if len(colors) < self.num_leds:
+            for i in range(self.num_leds - len(colors)):
+                colors += [(0, 0, 0)]
+        self.set_leds(colors, extra_info=f"{precip_type}={precip_percent}")
+        # TODO: Make a way to skip a screen if it has nothing to show (e.g. no rain/snow)
+        if full_leds > 0:
+            return True
+        else:
+            return False
 
 
 if __name__ == "__main__":
