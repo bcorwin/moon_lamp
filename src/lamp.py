@@ -212,16 +212,16 @@ class WeatherLamp(Lamp):
         return True
 
     def show_precipitation(self, precip_percent=None, precip_type=None):
-        # TODO: Set color intensity by amount
+        # TODO: Set color intensity (or add a blink rate or other screen) by amount
         if precip_percent is None and precip_type is None:
             daily_precip = self._get_weather("precip")
             precip_percent = daily_precip["precip_percent"]
             precip_type = daily_precip["precip_type"]
 
         if precip_type == "snow":
-            base_color = (255, 20, 147)
+            base_color = (238, 130, 238)
         elif precip_type == "rain":
-            base_color = (186, 85, 211)
+            base_color = (138, 43, 226)
         else:
             base_color = (0, 0, 0)
 
@@ -232,7 +232,6 @@ class WeatherLamp(Lamp):
             for i in range(self.num_leds - len(colors)):
                 colors += [(0, 0, 0)]
         self.set_leds(colors, extra_info=f"{precip_type}={precip_percent}")
-        # TODO: Make a way to skip a screen if it has nothing to show (e.g. no rain/snow)
         if full_leds > 0:
             return True
         else:
