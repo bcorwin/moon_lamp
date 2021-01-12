@@ -222,10 +222,8 @@ class WeatherLamp(Lamp):
 
         if precip_type == "snow":
             base_color = (238, 130, 238)
-        elif precip_type == "rain":
-            base_color = (138, 43, 226)
         else:
-            base_color = (0, 0, 0)
+            base_color = (138, 43, 226)
 
         full_leds = round(100*precip_percent / (100 / self.num_leds))
 
