@@ -70,11 +70,13 @@ class Lamp:
         if extra_info:
             print_string += [extra_info]
         print_string = "\t".join(print_string)
-        print(print_string)
+        
         with open("./lamp.txt", "w") as f:
             f.write(print_string)
 
-        if not self.print_only:
+        if self.print_only:
+            print(print_string)
+        else:
             for i in range(len(colors)):
                 color = colors[i]
                 if self.pixel_order == "GRB":
@@ -157,7 +159,7 @@ class WeatherLamp(Lamp):
                 precip_type = "rain"
                 precip_amount = today.get("rain")
             else:
-                precip_type = None
+                precip_type = precip_amount = None
             return {"precip_percent": precip_percent, "precip_type": precip_type, "precip_amount": precip_amount}
         else:
             raise ValueError(f"unknown metric: {metric}")

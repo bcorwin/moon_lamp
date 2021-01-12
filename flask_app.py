@@ -66,6 +66,7 @@ def moon_lamp_switch():
         timer_length = form.get("timer_length", None)
 
         cmd = get_cmd(mode=mode, delay=delay, timer_length=timer_length)
+        print(f"Running {' '.join(cmd)}")
         process = Popen(cmd)
         sleep(2)
         res = process.poll()
