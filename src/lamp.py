@@ -237,9 +237,9 @@ class WeatherLamp(Lamp):
             precip_type = precip_forecast["precip_type"]
 
         if precip_type == "snow":
-            base_color = (238, 130, 238)
+            base_color = (238, 130, 238)  # Violet
         else:
-            base_color = (138, 43, 226)
+            base_color = (75, 0, 130)  # Indigo
 
         full_leds = round(precip_percent / (100 / self.num_leds))
 
