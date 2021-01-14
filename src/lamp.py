@@ -126,7 +126,7 @@ class MoonLamp(Lamp):
 
 class WeatherLamp(Lamp):
     # TODO: find a way to flash between current and next hour/two hours/...
-    api_key = os.getenv("OPEN_WEATHER_KEY")
+    api_key = os.getenv("WEATHER_API_KEY")
     lat = os.getenv("LAT")
     lon = os.getenv("LON")
     min_color = 0.1
@@ -135,8 +135,7 @@ class WeatherLamp(Lamp):
     weather_updated_at = datetime(2020, 1, 1)
 
     def _update_weather(self):
-        url = "https://api.openweathermap.org/data/2.5/onecall"
-        url += f"?lat={self.lat}&lon={self.lon}&appid={self.api_key}&units=imperial"
+        url = f"http://api.weatherapi.com/v1/forecast.json?key={self.api_key}&q={self.lat},{self.lon}&days=2"
         res = get(url)
         self.weather = res.json()
         self.weather_updated_at = datetime.utcnow()
@@ -146,20 +145,37 @@ class WeatherLamp(Lamp):
             self._update_weather()
 
         if metric == "cloudiness":
-            return self.weather["current"]["clouds"]
+            return self.weather["current"]["cloud"]
         if metric == "feels_like":
-            return self.weather["current"]["feels_like"]
+            return self.weather["current"]["feelslike_f"]
         if metric == "precip":
-            today = self.weather["daily"][0]
-            precip_percent = today.get("pop", 0)
-            if "snow" in today.keys():
+            # current_dt = datetime.now()
+            # current_hour = current_dt.hour
+            # current_minute = current_dt.minute
+            #
+            # if current_minute < 30:
+            #     forecast_hour = current_hour
+            # else:
+            #     forecast_hour = current_hour + 1
+            # date_index = 0
+            # if current_hour == 24:
+            #     date_index = 1
+            #     forecast_hour = 0
+            # forecast = self.weather["forecast"]["forecastday"][date_index]["hour"][forecast_hour]
+            forecast = self.weather["forecast"]["forecastday"][0]["day"]
+
+            chance_of_rain = int(forecast["daily_chance_of_rain"])
+            chance_of_snow = int(forecast["daily_chance_of_snow"])
+            precip_amount = forecast["totalprecip_mm"]
+            if chance_of_rain == 0 and chance_of_rain == 0:
+                precip_type = None
+                precip_percent = 0
+            elif chance_of_snow >= chance_of_rain:
                 precip_type = "snow"
-                precip_amount = today.get("snow")
-            elif "rain" in today.keys():
+                precip_percent = chance_of_snow
+            elif chance_of_rain > chance_of_snow:
                 precip_type = "rain"
-                precip_amount = today.get("rain")
-            else:
-                precip_type = precip_amount = None
+                precip_percent = chance_of_rain
             return {"precip_percent": precip_percent, "precip_type": precip_type, "precip_amount": precip_amount}
         else:
             raise ValueError(f"unknown metric: {metric}")
@@ -216,16 +232,16 @@ class WeatherLamp(Lamp):
     def show_precipitation(self, precip_percent=None, precip_type=None):
         # TODO: Set color intensity (or add a blink rate or other screen) by amount
         if precip_percent is None and precip_type is None:
-            daily_precip = self._get_weather("precip")
-            precip_percent = daily_precip["precip_percent"]
-            precip_type = daily_precip["precip_type"]
+            precip_forecast = self._get_weather("precip")
+            precip_percent = precip_forecast["precip_percent"]
+            precip_type = precip_forecast["precip_type"]
 
         if precip_type == "snow":
             base_color = (238, 130, 238)
         else:
             base_color = (138, 43, 226)
 
-        full_leds = round(100*precip_percent / (100 / self.num_leds))
+        full_leds = round(precip_percent / (100 / self.num_leds))
 
         colors = full_leds*[base_color]
         if len(colors) < self.num_leds:
