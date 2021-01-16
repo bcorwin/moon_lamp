@@ -174,9 +174,9 @@ class WeatherLamp(Lamp):
             self._update_weather()
 
         if metric == "cloudiness":
-            return self._weather["current"]["clouds"]
+            return self._weather["clouds"]
         if metric == "feels_like":
-            return self._weather["current"]["feels_like"]
+            return self._weather["feels_like"]
         if metric == "precip":
             chance_of_rain = self._weather["chance_of_rain"]
             chance_of_snow = self._weather["chance_of_snow"]
