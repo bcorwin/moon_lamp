@@ -12,6 +12,11 @@ except ModuleNotFoundError:
 load_dotenv(override=True)
 
 
+def hour_rounder(t):
+    # Rounds to nearest hour by adding a timedelta hour if minute >= 30
+    return t.replace(second=0, microsecond=0, minute=0, hour=t.hour) + timedelta(hours=t.minute//30)
+
+
 def contrast_color(color):
     color = tuple(int(color.lstrip("#")[i:i+2], 16) for i in (0, 2, 4))
     luminance = (0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2]) / 255
@@ -131,42 +136,51 @@ class WeatherLamp(Lamp):
     lon = os.getenv("LON")
     min_color = 0.1
 
-    weather = {}
-    weather_updated_at = datetime(2020, 1, 1)
+    _raw_weather = {}
+    _weather_updated_at = datetime(2020, 1, 1)
 
     def _update_weather(self):
         url = f"http://api.weatherapi.com/v1/forecast.json?key={self.api_key}&q={self.lat},{self.lon}&days=2"
         res = get(url)
-        self.weather = res.json()
-        self.weather_updated_at = datetime.utcnow()
+        weather = res.json()
+
+        current_dt = datetime.now()
+        nearest_hour = hour_rounder(current_dt)
+        next_hour = nearest_hour + timedelta(hours=1)
+
+        nearest_date_index = 0 if nearest_hour.day == current_dt.day else 1
+        next_date_index = 0 if next_hour.day == current_dt.day else 1
+
+        forecast1 = weather["forecast"]["forecastday"][nearest_date_index]["hour"][nearest_hour.hour]
+        forecast2 = weather["forecast"]["forecastday"][next_date_index]["hour"][next_hour.hour]
+
+        chance_of_rain = max(int(forecast1["chance_of_rain"]), int(forecast2["chance_of_rain"]))
+        chance_of_snow = max(int(forecast1["chance_of_snow"]), int(forecast2["chance_of_snow"]))
+        precip_mm = max(forecast1["precip_mm"], forecast2["precip_mm"])
+
+        self._weather = {
+            "clouds": weather["current"]["cloud"],
+            "feels_like": weather["current"]["feelslike_f"],
+            "chance_of_rain": chance_of_rain,
+            "chance_of_snow": chance_of_snow,
+            "precip_mm": precip_mm,
+
+        }
+        self._raw_weather = weather
+        self._weather_updated_at = datetime.utcnow()
 
     def _get_weather(self, metric):
-        if datetime.utcnow() - self.weather_updated_at > timedelta(minutes=15):
+        if datetime.utcnow() - self._weather_updated_at > timedelta(minutes=15):
             self._update_weather()
 
         if metric == "cloudiness":
-            return self.weather["current"]["cloud"]
+            return self._weather["current"]["clouds"]
         if metric == "feels_like":
-            return self.weather["current"]["feelslike_f"]
+            return self._weather["current"]["feels_like"]
         if metric == "precip":
-            # current_dt = datetime.now()
-            # current_hour = current_dt.hour
-            # current_minute = current_dt.minute
-            #
-            # if current_minute < 30:
-            #     forecast_hour = current_hour
-            # else:
-            #     forecast_hour = current_hour + 1
-            # date_index = 0
-            # if current_hour == 24:
-            #     date_index = 1
-            #     forecast_hour = 0
-            # forecast = self.weather["forecast"]["forecastday"][date_index]["hour"][forecast_hour]
-            forecast = self.weather["forecast"]["forecastday"][0]["day"]
-
-            chance_of_rain = int(forecast["daily_chance_of_rain"])
-            chance_of_snow = int(forecast["daily_chance_of_snow"])
-            precip_amount = forecast["totalprecip_mm"]
+            chance_of_rain = self._weather["chance_of_rain"]
+            chance_of_snow = self._weather["chance_of_snow"]
+            precip_amount = self._weather["precip_mm"]
             if chance_of_rain == 0 and chance_of_rain == 0:
                 precip_type = None
                 precip_percent = 0
