@@ -181,7 +181,7 @@ class WeatherLamp(Lamp):
             chance_of_rain = self._weather["chance_of_rain"]
             chance_of_snow = self._weather["chance_of_snow"]
             precip_amount = self._weather["precip_mm"]
-            if chance_of_rain == 0 and chance_of_rain == 0:
+            if chance_of_rain == 0 and chance_of_snow == 0:
                 precip_type = None
                 precip_percent = 0
             elif chance_of_snow >= chance_of_rain:
