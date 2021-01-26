@@ -7,15 +7,17 @@
 ## Color Guide
 This is helpful when trying to determine which screen you are looking at based on the color:
 
-| Color               | Screen                    |
-|---------------------|---------------------------|
-| White and Dark Blue | [Moon](#moon)             |
-| Light Blue          | [Feels like](#feels-like) |
-| Blue                | [Feels like](#feels-like) |
-| Lime Green          | [Feels like](#feels-like) |
-| Orange              | [Feels like](#feels-like) |
-| Red                 | [Feels like](#feels-like) |
-| Yellow              | [Sunniness](#sunniness)   |
+| Color                  | Screen                                   |
+|------------------------|------------------------------------------|
+| White and/or Dark Blue | [Moon](#moon)                            |
+| Light Blue             | [Feels like (-10 to 19)](#feels-like)    |
+| Blue                   | [Feels like (20 to 49)](#feels-like)     |
+| Lime Green             | [Feels like (50 to 79)](#feels-like)     |
+| Orange                 | [Feels like (80 to 109)](#feels-like)    |
+| Red                    | [Feels like (110 to 130)](#feels-like)   |
+| Yellow                 | [Sunniness](#sunniness)                  |
+| Indigo                 | [Precipitation (Rain)](#precipitation)   |
+| Violet                 | [Precipitation (Snow)](#precipitation)   |
 
 ## Moon
 The moon screen, by default, shows the current moon phase.
