@@ -10,14 +10,14 @@ This is helpful when trying to determine which screen you are looking at based o
 | Color                  | Screen                                   |
 |------------------------|------------------------------------------|
 | White and/or Dark Blue | [Moon](#moon)                            |
-| Light Blue             | [Feels like (-10 to 19)](#feels-like)    |
-| Blue                   | [Feels like (20 to 49)](#feels-like)     |
-| Lime Green             | [Feels like (50 to 79)](#feels-like)     |
-| Orange                 | [Feels like (80 to 109)](#feels-like)    |
-| Red                    | [Feels like (110 to 130)](#feels-like)   |
-| Yellow                 | [Sunniness](#sunniness)                  |
-| Indigo                 | [Precipitation (Rain)](#precipitation)   |
-| Violet                 | [Precipitation (Snow)](#precipitation)   |
+| ![#00BFFF](https://via.placeholder.com/15/00BFFF/000000?text=+) Light Blue             | [Feels like (-10 to 19)](#feels-like)    |
+| ![#0000FF](https://via.placeholder.com/15/0000FF/000000?text=+) Blue                   | [Feels like (20 to 49)](#feels-like)     |
+| ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) Lime Green             | [Feels like (50 to 79)](#feels-like)     |
+| ![#FFA500](https://via.placeholder.com/15/FFA500/000000?text=+) Orange                 | [Feels like (80 to 109)](#feels-like)    |
+| ![#FF0000](https://via.placeholder.com/15/FF0000/000000?text=+) Red                    | [Feels like (110 to 130)](#feels-like)   |
+| ![#FFFF00](https://via.placeholder.com/15/FFFF00/000000?text=+) Yellow                 | [Sunniness](#sunniness)                  |
+| ![#4B0082](https://via.placeholder.com/15/4B0082/000000?text=+) Indigo                 | [Precipitation (Rain)](#precipitation)   |
+| ![#EE82EE](https://via.placeholder.com/15/EE82EE/000000?text=+) Violet                 | [Precipitation (Snow)](#precipitation)   |
 
 ## Moon
 The moon screen, by default, shows the current moon phase.
