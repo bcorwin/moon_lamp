@@ -9,7 +9,7 @@ This is helpful when trying to determine which screen you are looking at based o
 
 | Color                  | Screen                                   |
 |------------------------|------------------------------------------|
-| White and/or Dark Blue | [Moon](#moon)                            |
+| ![#FFFFFF](https://via.placeholder.com/15/FFFFFF/000000?text=+) White and/or ![#000032](https://via.placeholder.com/15/000032/000000?text=+) Dark Blue | [Moon](#moon)                            |
 | ![#00BFFF](https://via.placeholder.com/15/00BFFF/000000?text=+) Light Blue             | [Feels like (-10 to 19)](#feels-like)    |
 | ![#0000FF](https://via.placeholder.com/15/0000FF/000000?text=+) Blue                   | [Feels like (20 to 49)](#feels-like)     |
 | ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) Lime Green             | [Feels like (50 to 79)](#feels-like)     |
@@ -25,7 +25,8 @@ It can also be used to show a fixed phase.
 Using this, a screen could be created to cycle through the phases.
 
 To read the screen, the lamp will light up what part of the moon is visible with
-white and the dark side of the moon with a dark blue. Some example phases (more can be found in `/static`):
+![#FFFFFF](https://via.placeholder.com/15/FFFFFF/000000?text=+) White and the dark side of the moon with a
+![#000032](https://via.placeholder.com/15/000032/000000?text=+) Dark Blue. Some example phases (more can be found in `/static`):
  
 | *New moon* | *Waxing crescent* |
 | :---: | :---: |
@@ -37,20 +38,26 @@ white and the dark side of the moon with a dark blue. Some example phases (more 
  
 ## Feels like
 The feels like screen, by default, shows the current local feels like temperature.
-It uses four colors LIGHT BLUE, BLUE, LIME GREEN, ORANGE, and RED
+It uses four colors ![#00BFFF](https://via.placeholder.com/15/00BFFF/000000?text=+) Light Blue,
+![#0000FF](https://via.placeholder.com/15/0000FF/000000?text=+) Blue,
+![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) Lime Green,
+![#FFA500](https://via.placeholder.com/15/FFA500/000000?text=+) Orange,
+and ![#FF0000](https://via.placeholder.com/15/FF0000/000000?text=+) Red
 using these rules based on the feels like temperature:
 
-| Temperature range (&deg;F) | Color      |
-| ---                        | ---        |
-| -10 (or below) to 20       | Light Blue |
-| 20 to 50                   | Blue       |
-| 50 to 80                   | Lime green |
-| 80 to 110                  | Orange     |
-| 110 to 130 (or above)      | Red        |
+| Temperature range (&deg;F) | Color                                                                      |
+| ---                        | ---                                                                        |
+| -10 (or below) to 20       | ![#00BFFF](https://via.placeholder.com/15/00BFFF/000000?text=+) Light Blue |
+| 20 to 50                   | ![#0000FF](https://via.placeholder.com/15/0000FF/000000?text=+) Blue       |
+| 50 to 80                   | ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) Lime Green |
+| 80 to 110                  | ![#FFA500](https://via.placeholder.com/15/FFA500/000000?text=+) Orange     |
+| 110 to 130 (or above)      | ![#FF0000](https://via.placeholder.com/15/FF0000/000000?text=+) Red        |
 
 Each of those ranges (except the top and bottom, more on that later) has 30 degrees which is then divided into 
 six groups of 5 degrees and the corresponding number of lamp segments is filled in with the above color.
-For example,  if it's 54&deg;F, the lamp would be LIME GREEN and one segment would be filled in.
+For example,  if it's 54&deg;F, the lamp would be
+![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) Lime Green
+and one segment would be filled in.
 If it were 55&deg;F, two segments would be filled in.
 
 Example images:
@@ -64,7 +71,8 @@ Example images:
 | ![](static/low_70s.png) | ![](static/upper_70s.png) |
 
 If the temperature is below -10&deg;F or above 130&deg;F, the lamp will use the corresponding color
-(LIGHT BLUE and RED respectively) but light up in an on, off, on, on, off, on pattern:
+(![#00BFFF](https://via.placeholder.com/15/00BFFF/000000?text=+) Light Blue and
+![#FF0000](https://via.placeholder.com/15/FF0000/000000?text=+) Red respectively) but light up in an on, off, on, on, off, on pattern:
 
 Example images:
 
@@ -91,8 +99,9 @@ Example images:
 
 ## Precipitation
 This screen shows the type of precipitation and the probability for the day.
-Violet means snow and Blue-violet means rain and the number of sections that are lit up corresponds to the percent change
-of that happening for the day.
+![#EE82EE](https://via.placeholder.com/15/EE82EE/000000?text=+) Violet means snow and
+![#4B0082](https://via.placeholder.com/15/4B0082/000000?text=+) Indigo means rain and
+the number of sections that are lit up corresponds to the percent change of that happening for the next two hours.
 If the percent of precipitation is very low (<8%), this screen will not show up.
 
 Example images:
