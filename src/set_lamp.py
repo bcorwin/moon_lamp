@@ -5,8 +5,8 @@ import src.possible_screens as ps
 
 
 @click.command()
-@click.option('-s', '--screen', multiple=True,
-              default=["feels_like_screen", "sunniness_screen", "current_moon_screen", "daily_precip_screen"],
+@click.option('-s', '--screen', multiple=True, default=["feels_like_screen", "sunniness_screen", "current_moon_screen",
+                                                        "daily_precip_screen", "game_today"],
               help='Screen to show (see src/possible_screens.py')
 @click.option('-d', '--delay', default=5, help='How long, in seconds, to show each screen (default=5)')
 @click.option('-m', '--mode', default="day_only", help='Which mode to use (default=day_only)')

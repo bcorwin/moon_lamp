@@ -268,5 +268,47 @@ class WeatherLamp(Lamp):
             return False
 
 
+class SportsLamp(Lamp):
+    api_key = os.getenv("SPORTS_RADAR_KEY")
+
+    _venue = "Wrigley Field"
+    _game = None
+    _schedule_updated_at = datetime(2020, 1, 1)
+    _blue = (14,51,134)
+    _red = (204,52,51)
+
+    def _update_schedule(self):
+        url = f"https://api.sportradar.us/mlb/trial/v7/en/games/2014/06/15/schedule.json?api_key={self.api_key}"
+        res = get(url)
+        schedule = res.json()
+
+        games = {x['venue']['name']: x['day_night'] for x in schedule["games"]}
+        game = games.get(self._venue)
+
+        self._game = game if game is not None else 'no_game'
+
+    def _get_game(self):
+        if datetime.utcnow() - self._schedule_updated_at > timedelta(minutes=15):
+            self._update_schedule()
+        return self._game
+
+    def show_game(self, game=None):
+        game_status = self._get_game() if game is None else game
+        assert game_status in ("D", "N", "no_game"), "Invalid game status"
+
+        if game_status == "D":
+            colors = 3*[self._red] + 3*[self._blue]
+        elif game_status == "N":
+            colors = 3*[self._blue] + 3*[self._red]
+        else:
+            colors = 3*[self._red, self._blue]
+
+        self.set_leds(colors, extra_info=f"cubs={game_status}")
+        if game_status != 'no_game':
+            return True
+        else:
+            return False
+
+
 if __name__ == "__main__":
     pass
