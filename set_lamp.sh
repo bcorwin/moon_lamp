@@ -22,13 +22,13 @@ fi
 
 # Start the new prcoess
 echo $$ > setlamp.pid
-sudo  python3 -m src.set_lamp "$@" & echo $! > moonlamp.pid
+sudo  python3 -m src.set_lamp "$@" &>> flask.log  & echo $! > moonlamp.pid
 
 # If above fails, set lamp to a failed pattern
 if  wait $(<"moonlamp.pid")
 then
     true
 else
-    sudo python3 -m src.set_lamp -s error_screen --delay=600 & echo $! > moonlamp.pid
+    sudo python3 -m src.set_lamp -s error_screen --delay=600 &>> flask.log & echo $! > moonlamp.pid
     exit 1
 fi
