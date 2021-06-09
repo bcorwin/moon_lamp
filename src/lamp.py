@@ -78,6 +78,7 @@ class Lamp:
         
         with open("./lamp.txt", "w") as f:
             f.write(print_string)
+            f.write("\n")
 
         if self.print_only:
             print(print_string)
