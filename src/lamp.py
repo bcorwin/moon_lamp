@@ -278,17 +278,17 @@ class SportsLamp(Lamp):
     _red = (204, 52, 51)
 
     def _update_schedule(self):
-        url = f"https://api.sportradar.us/mlb/trial/v7/en/games/2014/06/15/schedule.json?api_key={self.api_key}"
+        url = "http://statsapi.mlb.com/api/v1/schedule/games/?sportId=1"
         res = get(url)
-        schedule = res.json()
+        schedule = res.json()["dates"][0]
 
-        games = {x['venue']['name']: x['day_night'] for x in schedule["games"]}
+        games = {x['venue']['name']: x['dayNight'] for x in schedule["games"]}
         game = games.get(self._venue)
 
-        self._game = game if game is not None else 'no_game'
+        self._game = game[0].upper() if game is not None else 'no_game'
 
     def _get_game(self):
-        if datetime.utcnow() - self._schedule_updated_at > timedelta(minutes=60):
+        if datetime.utcnow() - self._schedule_updated_at > timedelta(hours=6):
             self._update_schedule()
         return self._game
 
