@@ -274,8 +274,8 @@ class SportsLamp(Lamp):
     _venue = "Wrigley Field"
     _game = None
     _schedule_updated_at = datetime(2020, 1, 1)
-    _blue = (14,51,134)
-    _red = (204,52,51)
+    _blue = (14, 51, 134)
+    _red = (204, 52, 51)
 
     def _update_schedule(self):
         url = f"https://api.sportradar.us/mlb/trial/v7/en/games/2014/06/15/schedule.json?api_key={self.api_key}"
