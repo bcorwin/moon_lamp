@@ -18,6 +18,7 @@ This is helpful when trying to determine which screen you are looking at based o
 | ![#FFFF00](https://via.placeholder.com/15/FFFF00/000000?text=+) Yellow                 | [Sunniness](#sunniness)                  |
 | ![#4B0082](https://via.placeholder.com/15/4B0082/000000?text=+) Indigo                 | [Precipitation (Rain)](#precipitation)   |
 | ![#EE82EE](https://via.placeholder.com/15/EE82EE/000000?text=+) Violet                 | [Precipitation (Snow)](#precipitation)   |
+| ![#CC3433](https://via.placeholder.com/15/CC3433/000000?text=+) Red and ![#0E3287](https://via.placeholder.com/15/0E3287/000000?text=+) Blue | [Cubs game](#cubs-game)   |
 
 ## Moon
 The moon screen, by default, shows the current moon phase.
@@ -109,5 +110,19 @@ Example images:
 | *30% chance of rain* | *60% chance of snow* |
 | :---: | :---: |
 | ![](static/rain_30.png) | ![](static/snow_60.png) |
+
+## Cubs game
+This screen shows if there's a home day or night Cubs game.
+![#CC3433](https://via.placeholder.com/15/CC3433FF/000000?text=+) Red then
+![#0E3287](https://via.placeholder.com/15/0E3287/000000?text=+) Blue means there's a day game.
+![#0E3287](https://via.placeholder.com/15/0E3287/000000?text=+) Blue then
+![#CC3433](https://via.placeholder.com/15/CC3433FF/000000?text=+) Red means there's a night game.
+No screen means no game.
+
+Example images:
+
+| *Day game* | *Night game* |
+| :---: | :---: |
+| ![](static/game_day.png) | ![](static/game_night.png) |
 
 

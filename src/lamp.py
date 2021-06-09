@@ -274,8 +274,8 @@ class SportsLamp(Lamp):
     _venue = "Wrigley Field"
     _game = None
     _schedule_updated_at = datetime(2020, 1, 1)
-    _blue = (14,51,134)
-    _red = (204,52,51)
+    _blue = (14, 51, 134)
+    _red = (204, 52, 51)
 
     def _update_schedule(self):
         url = f"https://api.sportradar.us/mlb/trial/v7/en/games/2014/06/15/schedule.json?api_key={self.api_key}"
@@ -288,13 +288,16 @@ class SportsLamp(Lamp):
         self._game = game if game is not None else 'no_game'
 
     def _get_game(self):
-        if datetime.utcnow() - self._schedule_updated_at > timedelta(minutes=15):
+        if datetime.utcnow() - self._schedule_updated_at > timedelta(minutes=60):
             self._update_schedule()
         return self._game
 
     def show_game(self, game=None):
-        game_status = self._get_game() if game is None else game
-        assert game_status in ("D", "N", "no_game"), "Invalid game status"
+        try:
+            game_status = self._get_game() if game is None else game
+            assert game_status in ("D", "N", "no_game"), "Invalid game status"
+        except Exception as e:
+            game_status = "ERROR: " + str(e)
 
         if game_status == "D":
             colors = 3*[self._red] + 3*[self._blue]
