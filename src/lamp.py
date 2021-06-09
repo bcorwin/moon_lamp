@@ -303,6 +303,8 @@ class SportsLamp(Lamp):
             colors = 3*[self._red] + 3*[self._blue]
         elif game_status == "N":
             colors = 3*[self._blue] + 3*[self._red]
+        elif game_status == "no_game":
+            colors = 6 * [(0, 0, 0)]
         else:
             colors = 3*[self._red, self._blue]
 
