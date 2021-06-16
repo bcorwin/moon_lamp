@@ -262,8 +262,9 @@ class WeatherLamp(Lamp):
         if len(colors) < self.num_leds:
             for i in range(self.num_leds - len(colors)):
                 colors += [(0, 0, 0)]
-        self.set_leds(colors, extra_info=f"{precip_type}={precip_percent}")
         if full_leds > 0:
+            self.set_leds(colors,
+                          extra_info=f"{precip_type}={precip_percent}")
             return True
         else:
             return False
@@ -309,8 +310,8 @@ class SportsLamp(Lamp):
         else:
             colors = 3*[self._red, self._blue]
 
-        self.set_leds(colors, extra_info=f"cubs={game_status}")
         if game_status != 'no_game':
+            self.set_leds(colors, extra_info=f"cubs={game_status}")
             return True
         else:
             return False
