@@ -202,7 +202,11 @@ class WeatherLamp(Lamp):
             elif chance_of_rain > chance_of_snow:
                 precip_type = "rain"
                 precip_percent = chance_of_rain
-            return {"precip_percent": precip_percent, "precip_type": precip_type, "precip_amount": precip_amount}
+            return {
+                "precip_percent": precip_percent,
+                "precip_type": precip_type,
+                "precip_amount": precip_amount
+            }
         else:
             raise ValueError(f"unknown metric: {metric}")
 
@@ -255,21 +259,21 @@ class WeatherLamp(Lamp):
         self.set_leds(colors, extra_info=f"feels_like={feels_like}")
         return True
 
-    def show_precipitation(self, precip_percent=None, precip_type=None, precip_mm=None):
-        if precip_percent is None and precip_type is None and precip_mm is None:
+    def show_precipitation(self, precip_percent=None, precip_type=None, precip_amount=None):
+        if precip_percent is None and precip_type is None and precip_amount is None:
             precip_forecast = self._get_weather("precip")
             precip_percent = precip_forecast["precip_percent"]
             precip_type = precip_forecast["precip_type"]
-            precip_mm = precip_forecast["precip_mm"]
+            precip_amount = precip_forecast["precip_amount"]
 
         if precip_type == "snow":
             base_color = (238, 130, 238)  # Violet
             blink = 0
         else:
             base_color = (75, 0, 130)  # Indigo
-            if precip_mm > 7.6:
+            if precip_amount > 7.6:
                 blink = 3
-            elif precip_mm > 2.5:
+            elif precip_amount > 2.5:
                 blink = 2
             else:
                 blink = 0
