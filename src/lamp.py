@@ -1,5 +1,6 @@
 import os
 import colr
+from time import sleep
 from requests import get
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
@@ -63,15 +64,26 @@ class Lamp:
         self.print_only = print_only
         self.num_leds = num_leds
 
+    def _show_leds(self, colors):
+        for i in range(len(colors)):
+            color = colors[i]
+            if self.pixel_order == "GRB":
+                color = (color[1], color[0], color[2])
+            led_idx = i if not self.reverse_leds else self.num_leds - i - 1
+            self.pixels[led_idx] = color
+        self.pixels.show()
+
     def leds_off(self):
         self.set_leds(self.num_leds*[(0, 0, 0)])
 
-    def set_leds(self, colors, extra_info=None):
+    def set_leds(self, colors, extra_info=None, blink=0):
         assert self.num_leds == len(colors), f"Expecting {self.num_leds} colors not {len(colors)}"
 
         hex_colors = ['#%02x%02x%02x' % c for c in colors]
         print_string = [str(datetime.now())]
         print_string.extend([colr.color(c, fore=contrast_color(c), back=c) for c in hex_colors])
+        if blink:
+            print_string += [f"blink={blink}"]
         if extra_info:
             print_string += [extra_info]
         print_string = "\t".join(print_string)
@@ -83,13 +95,12 @@ class Lamp:
         if self.print_only:
             print(print_string)
         else:
-            for i in range(len(colors)):
-                color = colors[i]
-                if self.pixel_order == "GRB":
-                    color = (color[1], color[0], color[2])
-                led_idx = i if not self.reverse_leds else self.num_leds - i - 1
-                self.pixels[led_idx] = color
-            self.pixels.show()
+            for _ in range(blink):
+                self._show_leds(colors)
+                sleep(0.1)
+                self.leds_off()
+                sleep(0.1)
+            self._show_leds(colors)
 
 
 class MoonLamp(Lamp):
@@ -244,17 +255,24 @@ class WeatherLamp(Lamp):
         self.set_leds(colors, extra_info=f"feels_like={feels_like}")
         return True
 
-    def show_precipitation(self, precip_percent=None, precip_type=None):
-        # TODO: Set color intensity (or add a blink rate or other screen) by amount
-        if precip_percent is None and precip_type is None:
+    def show_precipitation(self, precip_percent=None, precip_type=None, precip_mm=None):
+        if precip_percent is None and precip_type is None and precip_mm is None:
             precip_forecast = self._get_weather("precip")
             precip_percent = precip_forecast["precip_percent"]
             precip_type = precip_forecast["precip_type"]
+            precip_mm = precip_forecast["precip_mm"]
 
         if precip_type == "snow":
             base_color = (238, 130, 238)  # Violet
+            blink = 0
         else:
             base_color = (75, 0, 130)  # Indigo
+            if precip_mm > 7.6:
+                blink = 3
+            elif precip_mm > 2.5:
+                blink = 2
+            else:
+                blink = 0
 
         full_leds = round(precip_percent / (100 / self.num_leds))
 
@@ -264,7 +282,8 @@ class WeatherLamp(Lamp):
                 colors += [(0, 0, 0)]
         if full_leds > 0:
             self.set_leds(colors,
-                          extra_info=f"{precip_type}={precip_percent}")
+                          extra_info=f"{precip_type}={precip_percent}",
+                          blink=blink)
             return True
         else:
             return False
