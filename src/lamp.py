@@ -97,9 +97,9 @@ class Lamp:
         else:
             for _ in range(blink):
                 self._show_leds(colors)
-                sleep(0.1)
+                sleep(0.25)
                 self.leds_off()
-                sleep(0.1)
+                sleep(0.25)
             self._show_leds(colors)
 
 
@@ -272,7 +272,7 @@ class WeatherLamp(Lamp):
         else:
             base_color = (75, 0, 130)  # Indigo
             if precip_amount > 7.6:
-                blink = 3
+                blink = 4
             elif precip_amount > 2.5:
                 blink = 2
             else:
