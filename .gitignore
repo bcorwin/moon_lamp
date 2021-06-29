@@ -10,3 +10,5 @@ lamp.txt
 *.pid
 *.log
 .DS_Store
+*.ipynb
+.ipynb_checkpoints/

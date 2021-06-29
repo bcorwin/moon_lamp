@@ -73,6 +73,21 @@ class Lamp:
             self.pixels[led_idx] = color
         self.pixels.show()
 
+    def catch_error(decorated):
+        def wrapper(*args, **kwargs):
+            self = args[0]
+            try:
+                return decorated(*args, **kwargs)
+            except Exception as e:
+                self.show_error(f"ERROR: {str(e)}")
+                return True
+
+        return wrapper
+
+    def show_error(self, msg):
+        colors = 2 * [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
+        self.set_leds(colors,extra_info=msg)
+
     def leds_off(self):
         self.set_leds(self.num_leds*[(0, 0, 0)])
 
@@ -123,6 +138,7 @@ class MoonLamp(Lamp):
         }
 
     def _get_light_status(self, phase_number):
+        assert phase_number in self.phase_numbers, "Invalid phase_number"
         return self.phase_numbers[phase_number]
 
     def _set_lights(self, phase_number):
@@ -132,6 +148,7 @@ class MoonLamp(Lamp):
         self.current_phase = phase_number
         return None
 
+    @Lamp.catch_error
     def show_moon(self, phase_number=None):
         if not phase_number:
             phase_fraction = get_phase_fraction(datetime.utcnow())
@@ -210,6 +227,7 @@ class WeatherLamp(Lamp):
         else:
             raise ValueError(f"unknown metric: {metric}")
 
+    @Lamp.catch_error
     def show_sunniness(self, cloudiness=None):
         base_color = (255, 255, 0)
         if cloudiness is None:
@@ -230,6 +248,7 @@ class WeatherLamp(Lamp):
         self.set_leds(colors, extra_info=f"cloudiness={cloudiness}")
         return True
 
+    @Lamp.catch_error
     def show_feels_like(self, feels_like=None):
         if feels_like is None:
             feels_like = self._get_weather("feels_like")
@@ -259,6 +278,7 @@ class WeatherLamp(Lamp):
         self.set_leds(colors, extra_info=f"feels_like={feels_like}")
         return True
 
+    @Lamp.catch_error
     def show_precipitation(self, precip_percent=None, precip_type=None, precip_amount=None):
         if precip_percent is None and precip_type is None and precip_amount is None:
             precip_forecast = self._get_weather("precip")
@@ -317,12 +337,10 @@ class SportsLamp(Lamp):
             self._update_schedule()
         return self._game
 
+    @Lamp.catch_error
     def show_game(self, game=None):
-        try:
-            game_status = self._get_game() if game is None else game
-            assert game_status in ("D", "N", "no_game"), "Invalid game status"
-        except Exception as e:
-            game_status = "ERROR: " + str(e)
+        game_status = self._get_game() if game is None else game
+        assert game_status in ("D", "N", "no_game"), "Invalid game status"
 
         if game_status == "D":
             colors = 3*[self._red] + 3*[self._blue]
