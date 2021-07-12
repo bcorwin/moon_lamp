@@ -14,7 +14,7 @@ load_dotenv(override=True)
 
 
 def gen_html(text, fore, back):
-    return f'<font style="color:{fore};background-color:{back};">{text}</font>'
+    return f'<font style="color:{fore};background-color:{back};font-family: monospace;">{text}</font>'
 
 
 def hour_rounder(t):
