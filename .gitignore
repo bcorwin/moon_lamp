@@ -6,6 +6,7 @@ venv
 app.db
 .idea/
 lamp.txt
+lamp_html.txt
 .env
 *.pid
 *.log

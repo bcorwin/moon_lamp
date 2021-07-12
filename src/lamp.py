@@ -95,9 +95,13 @@ class Lamp:
         assert self.num_leds == len(colors), f"Expecting {self.num_leds} colors not {len(colors)}"
 
         hex_colors = ['#%02x%02x%02x' % c for c in colors]
-        print_string_html = print_string = [str(datetime.now())]
+        
+        print_string = [str(datetime.now())]
+        print_string_html = print_string.copy()
+        
         print_string.extend([colr.color(c, fore=contrast_color(c), back=c) for c in hex_colors])
         print_string_html.extend([c for c in hex_colors])
+        
         if blink:
             print_string += [f"blink={blink}"]
             print_string_html += [f"blink={blink}"]
