@@ -113,7 +113,7 @@ class Lamp:
             for _ in range(blink):
                 self._show_leds(colors)
                 sleep(0.25)
-                self.leds_off()
+                self._show_leds(self.num_leds*[(0,0,0)])
                 sleep(0.25)
             self._show_leds(colors)
 
@@ -171,6 +171,8 @@ class WeatherLamp(Lamp):
     def _update_weather(self):
         url = f"http://api.weatherapi.com/v1/forecast.json?key={self.api_key}&q={self.lat},{self.lon}&days=2"
         res = get(url)
+        res.raise_for_status()
+
         weather = res.json()
 
         current_dt = datetime.now()
@@ -325,6 +327,8 @@ class SportsLamp(Lamp):
     def _update_schedule(self):
         url = "http://statsapi.mlb.com/api/v1/schedule/games/?sportId=1"
         res = get(url)
+        res.raise_for_status()
+
         schedule = res.json()["dates"][0]
 
         games = {x['venue']['name']: x['dayNight'] for x in schedule["games"]}
