@@ -90,7 +90,7 @@ class Lamp:
 
     def show_error(self, msg):
         colors = 2 * [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
-        self.set_leds(colors,extra_info=msg)
+        self.set_leds(colors, extra_info=msg)
 
     def leds_off(self):
         self.set_leds(self.num_leds*[(0, 0, 0)])
@@ -105,10 +105,7 @@ class Lamp:
         
         print_string.extend([colr.color(c, fore=contrast_color(c), back=c) for c in hex_colors])
         print_string_html.extend([gen_html(c, fore=contrast_color(c), back=c) for c in hex_colors])
-        
-        if blink:
-            print_string += [f"blink={blink}"]
-            print_string_html += [f"blink={blink}"]
+
         if extra_info:
             print_string += [extra_info]
             print_string_html += [extra_info]
@@ -160,7 +157,17 @@ class MoonLamp(Lamp):
     def _set_lights(self, phase_number):
         light_status = self._get_light_status(phase_number)
         colors = [(255, 255, 255) if s == "on" else (0, 0, 50) for s in light_status]
-        self.set_leds(colors, extra_info=f"phase_number={phase_number}")
+        phase_name = {
+            0: "new",
+            1: "waxing crescent", 2: "waxing crescent",
+            3: "first quarter",
+            4: "waxing gibbous", 5: "waxing gibbous",
+            6: "full",
+            7: "waning gibbous", 8: "waning gibbous",
+            9: "last quarter",
+            10: "waning crescent", 11: "waning crescent",
+        }.get(phase_number)
+        self.set_leds(colors, extra_info=f"The current moon phase is '{phase_name}'.")
         self.current_phase = phase_number
         return None
 
@@ -263,7 +270,7 @@ class WeatherLamp(Lamp):
         if len(colors) < self.num_leds:
             for i in range(self.num_leds - len(colors)):
                 colors += [(0, 0, 0)]
-        self.set_leds(colors, extra_info=f"cloudiness={cloudiness}")
+        self.set_leds(colors, extra_info=f"{cloudiness}% cloudy")
         return True
 
     @Lamp.catch_error
@@ -293,7 +300,7 @@ class WeatherLamp(Lamp):
         else:
             colors = 2*[base_color, (0, 0, 0), base_color]
 
-        self.set_leds(colors, extra_info=f"feels_like={feels_like}")
+        self.set_leds(colors, extra_info=f"It current feels like {feels_like}F")
         return True
 
     @Lamp.catch_error
@@ -307,14 +314,18 @@ class WeatherLamp(Lamp):
         if precip_type == "snow":
             base_color = (238, 130, 238)  # Violet
             blink = 0
+            intensity = ""
         else:
             base_color = (75, 0, 130)  # Indigo
             if precip_amount > 7.6:
                 blink = 4
+                intensity = "intense "
             elif precip_amount > 2.5:
                 blink = 2
+                intensity = "heavy "
             else:
                 blink = 0
+                intensity = "light "
 
         full_leds = round(precip_percent / (100 / self.num_leds))
 
@@ -323,9 +334,8 @@ class WeatherLamp(Lamp):
             for i in range(self.num_leds - len(colors)):
                 colors += [(0, 0, 0)]
         if full_leds > 0:
-            self.set_leds(colors,
-                          extra_info=f"{precip_type}={precip_percent}",
-                          blink=blink)
+            text = f"There's a {precip_percent}% chance of {intensity}{precip_type} in the next two hours."
+            self.set_leds(colors, extra_info=text, blink=blink)
             return True
         else:
             return False
@@ -368,15 +378,18 @@ class SportsLamp(Lamp):
 
         if game_status == "D":
             colors = 3*[self._red] + 3*[self._blue]
+            text = "There's a Cubs game today."
         elif game_status == "N":
             colors = 3*[self._blue] + 3*[self._red]
+            text = "There's a Cubs game tonight."
         elif game_status == "no_game":
             colors = 6 * [(0, 0, 0)]
+            text = "There's no Cubs game today."
         else:
             colors = 3*[self._red, self._blue]
 
         if game_status != 'no_game':
-            self.set_leds(colors, extra_info=f"cubs={game_status}")
+            self.set_leds(colors, extra_info=text)
             return True
         else:
             return False
