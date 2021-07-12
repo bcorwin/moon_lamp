@@ -97,5 +97,23 @@ def moon_lamp_switch():
     return render_template_string(home_template, form=form, current_values=current_values)
 
 
+@app.route('/watch/')
+def watch():
+    with open("lamp_html.txt") as f:
+        lamp = f.read()
+    out = """
+<script>
+<!--
+function timedRefresh(timeoutPeriod) {
+    setTimeout("location.reload(true);",timeoutPeriod);
+}
+
+window.onload = timedRefresh(250);
+//   -->
+</script>"""
+    out += str(lamp)
+    return out
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)

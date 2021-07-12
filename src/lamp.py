@@ -13,6 +13,10 @@ except ModuleNotFoundError:
 load_dotenv(override=True)
 
 
+def gen_html(text, fore, back):
+    return f'<font style="color:{fore};background-color:{back};">{text}</font>'
+
+
 def hour_rounder(t):
     # Rounds to nearest hour by adding a timedelta hour if minute >= 30
     return t.replace(second=0, microsecond=0, minute=0, hour=t.hour) + timedelta(hours=t.minute//30)
@@ -100,7 +104,7 @@ class Lamp:
         print_string_html = print_string.copy()
         
         print_string.extend([colr.color(c, fore=contrast_color(c), back=c) for c in hex_colors])
-        print_string_html.extend([c for c in hex_colors])
+        print_string_html.extend([gen_html(c, fore=contrast_color(c), back=c) for c in hex_colors])
         
         if blink:
             print_string += [f"blink={blink}"]
