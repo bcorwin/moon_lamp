@@ -68,8 +68,8 @@ class Screen:
 
 class Screens:
     def __init__(self, screens, delay=5):
-        self.on_hour = 8
-        self.off_hour = 21
+        self.on_hour = 7 
+        self.off_hour = 20
         self.off = screens[0].off
         self.screens = screens
         self.delay = delay
