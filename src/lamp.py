@@ -329,12 +329,16 @@ class SportsLamp(Lamp):
         res = get(url)
         res.raise_for_status()
 
-        schedule = res.json()["dates"][0]
+        schedule = res.json()["dates"]
+        if len(schedule) == 0:
+            game_status = 'no_game'
+        else:
+            schedule = schedule[0]
+            games = {x['venue']['name']: x['dayNight'] for x in schedule["games"]}
+            game = games.get(self._venue)
+            game_status = game[0].upper() if game is not None else 'no_game'
 
-        games = {x['venue']['name']: x['dayNight'] for x in schedule["games"]}
-        game = games.get(self._venue)
-
-        self._game = game[0].upper() if game is not None else 'no_game'
+        self._game = game_status
 
     def _get_game(self):
         if datetime.utcnow() - self._schedule_updated_at > timedelta(hours=6):
