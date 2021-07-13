@@ -17,7 +17,10 @@ load_dotenv(override=True)
 
 
 def gen_html(hex_color):
-    style = f"fill:{hex_color};stroke-width:3;stroke:#000000"
+    if hex_color == "#000000":
+        style = f"fill:#FFFFFF;stroke-width:3;stroke:#FFFFFF"
+    else:
+        style = f"fill:{hex_color};stroke-width:3;stroke:#000000"
     out = f'<svg width="20" height="20"><rect width="20" height="20" style="{style}"/></svg>'
     return out
 
@@ -112,7 +115,7 @@ class Lamp:
         print_string = [current_time]
         print_string.extend([colr.color(c, fore=contrast_color(c), back=c) for c in hex_colors])
 
-        print_string_html = [f'<div id="{div_id}">{current_time}']
+        print_string_html = [f'<div id="{div_id}"><font style="font-family:monospace;">{current_time}']
         print_string_html.extend([gen_html(c) for c in hex_colors])
 
         if extra_info:
@@ -120,7 +123,7 @@ class Lamp:
             print_string_html += [extra_info]
         print_string = "\t".join(print_string)
 
-        print_string_html[len(print_string_html)-1] += "</div>"
+        print_string_html[len(print_string_html)-1] += "</font></div>"
         print_string_html = "\t".join(print_string_html)
         
         with open("./lamp.txt", "w") as f:
