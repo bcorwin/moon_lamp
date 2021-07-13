@@ -1,5 +1,8 @@
 import os
+import re
+
 import colr
+import inspect
 from time import sleep
 from requests import get
 from dotenv import load_dotenv
@@ -79,45 +82,65 @@ class Lamp:
 
     def catch_error(decorated):
         def wrapper(*args, **kwargs):
+            func_name = decorated.__name__
             self = args[0]
             try:
                 return decorated(*args, **kwargs)
             except Exception as e:
-                self.show_error(f"ERROR: {str(e)}")
+                self.show_error(f"Error on {func_name}: {str(e)}", div_id=func_name)
                 return True
 
         return wrapper
 
-    def show_error(self, msg):
+    def show_error(self, msg, div_id):
         colors = 2 * [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
-        self.set_leds(colors, extra_info=msg)
+        self.set_leds(colors, extra_info=msg, div_id=div_id)
 
     def leds_off(self):
         self.set_leds(self.num_leds*[(0, 0, 0)])
 
-    def set_leds(self, colors, extra_info=None, blink=0):
+    def set_leds(self, colors, extra_info=None, blink=0, div_id=None):
+        if div_id is None:
+            div_id = inspect.stack()[1][3]
         assert self.num_leds == len(colors), f"Expecting {self.num_leds} colors not {len(colors)}"
 
         hex_colors = ['#%02x%02x%02x' % c for c in colors]
-        
-        print_string = [str(datetime.now())]
-        print_string_html = print_string.copy()
-        
+        current_time = str(datetime.now().replace(microsecond=0))
+
+        print_string = [current_time]
         print_string.extend([colr.color(c, fore=contrast_color(c), back=c) for c in hex_colors])
+
+        print_string_html = [f'<div id="{div_id}">{current_time}']
         print_string_html.extend([gen_html(c, fore=contrast_color(c), back=c) for c in hex_colors])
 
         if extra_info:
             print_string += [extra_info]
             print_string_html += [extra_info]
         print_string = "\t".join(print_string)
+
+        print_string_html[len(print_string_html)-1] += "</div>"
         print_string_html = "\t".join(print_string_html)
         
         with open("./lamp.txt", "w") as f:
             f.write(print_string)
             f.write("\n")
 
+        html_file = []
+        replaced = False
+        with open("./lamp_html.txt", "r") as f:
+            for line in f:
+                if re.search(div_id, line):
+                    html_file.append(print_string_html)
+                    replaced = True
+                else:
+                    html_file.append(line.strip())
+        if not replaced:
+            html_file.append(print_string_html)
+        html_file = "\n".join(html_file)
         with open("./lamp_html.txt", "w") as f:
-            f.write(print_string_html)
+            # TODO: completely re-write file occasionally (when turned off?) because the shown screens could change
+            #  for example, cubs could no longer be playing OR still run set_leds but with print_only = True
+            f.write(html_file)
             f.write("\n")
 
         if self.print_only:
@@ -158,16 +181,16 @@ class MoonLamp(Lamp):
         light_status = self._get_light_status(phase_number)
         colors = [(255, 255, 255) if s == "on" else (0, 0, 50) for s in light_status]
         phase_name = {
-            0: "new",
-            1: "waxing crescent", 2: "waxing crescent",
-            3: "first quarter",
-            4: "waxing gibbous", 5: "waxing gibbous",
-            6: "full",
-            7: "waning gibbous", 8: "waning gibbous",
-            9: "last quarter",
-            10: "waning crescent", 11: "waning crescent",
+            0: "New",
+            1: "Waxing crescent", 2: "Waxing crescent",
+            3: "First quarter",
+            4: "Waxing gibbous", 5: "Waxing gibbous",
+            6: "Full",
+            7: "Waning gibbous", 8: "Waning gibbous",
+            9: "Last quarter",
+            10: "Waning crescent", 11: "Waning crescent",
         }.get(phase_number)
-        self.set_leds(colors, extra_info=f"The current moon phase is '{phase_name}'.")
+        self.set_leds(colors, extra_info=f"Current moon phase: {phase_name}")
         self.current_phase = phase_number
         return None
 
@@ -300,7 +323,7 @@ class WeatherLamp(Lamp):
         else:
             colors = 2*[base_color, (0, 0, 0), base_color]
 
-        self.set_leds(colors, extra_info=f"It current feels like {feels_like}F")
+        self.set_leds(colors, extra_info=f"It currently feels like {feels_like}F")
         return True
 
     @Lamp.catch_error
@@ -334,7 +357,7 @@ class WeatherLamp(Lamp):
             for i in range(self.num_leds - len(colors)):
                 colors += [(0, 0, 0)]
         if full_leds > 0:
-            text = f"There's a {precip_percent}% chance of {intensity}{precip_type} in the next two hours."
+            text = f"There's a {precip_percent}% chance of {intensity}{precip_type} in the next two hours"
             self.set_leds(colors, extra_info=text, blink=blink)
             return True
         else:
@@ -378,13 +401,13 @@ class SportsLamp(Lamp):
 
         if game_status == "D":
             colors = 3*[self._red] + 3*[self._blue]
-            text = "There's a Cubs game today."
+            text = "There's a Cubs game today"
         elif game_status == "N":
             colors = 3*[self._blue] + 3*[self._red]
-            text = "There's a Cubs game tonight."
+            text = "There's a Cubs game tonight"
         elif game_status == "no_game":
             colors = 6 * [(0, 0, 0)]
-            text = "There's no Cubs game today."
+            text = "There's no Cubs game today"
         else:
             colors = 3*[self._red, self._blue]
 

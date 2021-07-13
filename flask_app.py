@@ -101,18 +101,7 @@ def moon_lamp_switch():
 def watch():
     with open("lamp_html.txt") as f:
         lamp = f.read()
-    out = """
-<script>
-<!--
-function timedRefresh(timeoutPeriod) {
-    setTimeout("location.reload(true);",timeoutPeriod);
-}
-
-window.onload = timedRefresh(250);
-//   -->
-</script>"""
-    out += str(lamp)
-    return out
+    return lamp
 
 
 if __name__ == "__main__":
