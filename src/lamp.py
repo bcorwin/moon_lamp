@@ -16,8 +16,10 @@ except ModuleNotFoundError:
 load_dotenv(override=True)
 
 
-def gen_html(text, fore, back):
-    return f'<font style="color:{fore};background-color:{back};font-family: monospace;">{text}</font>'
+def gen_html(hex_color):
+    style = f"fill:{hex_color};stroke-width:3;stroke:#000000"
+    out = f'<svg width="20" height="20"><rect width="20" height="20" style="{style}"/></svg>'
+    return out
 
 
 def hour_rounder(t):
@@ -111,7 +113,7 @@ class Lamp:
         print_string.extend([colr.color(c, fore=contrast_color(c), back=c) for c in hex_colors])
 
         print_string_html = [f'<div id="{div_id}">{current_time}']
-        print_string_html.extend([gen_html(c, fore=contrast_color(c), back=c) for c in hex_colors])
+        print_string_html.extend([gen_html(c) for c in hex_colors])
 
         if extra_info:
             print_string += [extra_info]
@@ -178,6 +180,7 @@ class MoonLamp(Lamp):
         return self.phase_numbers[phase_number]
 
     def _set_lights(self, phase_number):
+        # TODO: move this to show_moon so div_id is accurate
         light_status = self._get_light_status(phase_number)
         colors = [(255, 255, 255) if s == "on" else (0, 0, 50) for s in light_status]
         phase_name = {
