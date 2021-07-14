@@ -102,7 +102,7 @@ class Lamp:
         self.set_leds(colors, extra_info=msg, div_id=div_id)
 
     def leds_off(self):
-        self.set_leds(self.num_leds*[(0, 0, 0)])
+        self.set_leds(self.num_leds*[(0, 0, 0)], extra_info="Off")
 
     def set_leds(self, colors, extra_info=None, blink=0, div_id=None):
         if div_id is None:
@@ -132,19 +132,25 @@ class Lamp:
 
         html_file = []
         replaced = False
-        with open("./lamp_html.txt", "r") as f:
-            for line in f:
-                if re.search(div_id, line):
-                    html_file.append(print_string_html)
-                    replaced = True
-                else:
-                    html_file.append(line.strip())
+        if div_id != "leds_off":
+            # This will clear the file
+            with open("./lamp_html.txt", "r") as f:
+                for line in f:
+                    line_dt = re.search(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', line).group(0)
+                    line_dt = datetime.fromisoformat(line_dt)
+
+                    if re.search(div_id, line):
+                        html_file.append(print_string_html)
+                        replaced = True
+                    elif (datetime.now() - line_dt).seconds / 60 > 15:
+                        # Delete the line if it's more than 30 mins old
+                        pass
+                    else:
+                        html_file.append(line.strip())
         if not replaced:
             html_file.append(print_string_html)
         html_file = "\n".join(html_file)
         with open("./lamp_html.txt", "w") as f:
-            # TODO: completely re-write file occasionally (when turned off?) because the shown screens could change
-            #  for example, cubs could no longer be playing OR still run set_leds but with print_only = True
             f.write(html_file)
             f.write("\n")
 
@@ -182,8 +188,12 @@ class MoonLamp(Lamp):
         assert phase_number in self.phase_numbers, "Invalid phase_number"
         return self.phase_numbers[phase_number]
 
-    def _set_lights(self, phase_number):
-        # TODO: move this to show_moon so div_id is accurate
+    @Lamp.catch_error
+    def show_moon(self, phase_number=None):
+        if not phase_number:
+            phase_fraction = get_phase_fraction(datetime.utcnow())
+            phase_number = get_phase_number(phase_fraction)
+
         light_status = self._get_light_status(phase_number)
         colors = [(255, 255, 255) if s == "on" else (0, 0, 50) for s in light_status]
         phase_name = {
@@ -197,16 +207,6 @@ class MoonLamp(Lamp):
             10: "Waning crescent", 11: "Waning crescent",
         }.get(phase_number)
         self.set_leds(colors, extra_info=f"Current moon phase: {phase_name}")
-        self.current_phase = phase_number
-        return None
-
-    @Lamp.catch_error
-    def show_moon(self, phase_number=None):
-        if not phase_number:
-            phase_fraction = get_phase_fraction(datetime.utcnow())
-            phase_number = get_phase_number(phase_fraction)
-
-        self._set_lights(phase_number)
         return True
 
 
