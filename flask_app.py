@@ -60,10 +60,13 @@ def moon_lamp_switch():
     if request.method == "POST":
         # needs validation
         form = request.form
+        res = request.json
+        if res is None:
+            res = {}
         # Required
-        mode = form.get("mode", None)
-        delay = form.get("delay", None)
-        timer_length = form.get("timer_length", None)
+        mode = form.get("mode", res.get("mode", None))
+        delay = form.get("delay", res.get("delay", None))
+        timer_length = form.get("timer_length", res.get("timer_length", None))
 
         cmd = get_cmd(mode=mode, delay=delay, timer_length=timer_length)
         print(f"Running {' '.join(cmd)}")
