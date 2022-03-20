@@ -18,9 +18,9 @@ load_dotenv(override=True)
 
 def gen_html(hex_color):
     if hex_color == "#000000":
-        style = f"fill:#FFFFFF;stroke-width:3;stroke:#FFFFFF"
+        style = f"fill:#FFFFFF;stroke-width:1;stroke:#FFFFFF"
     else:
-        style = f"fill:{hex_color};stroke-width:3;stroke:#000000"
+        style = f"fill:{hex_color};stroke-width:1;stroke:#000000"
     out = f'<svg width="20" height="20"><rect width="20" height="20" style="{style}"/></svg>'
     return out
 
@@ -116,7 +116,7 @@ class Lamp:
         print_string.extend([colr.color(c, fore=contrast_color(c), back=c) for c in hex_colors])
 
         print_string_html = [f'<div id="{div_id}"><font style="font-family:monospace;">{current_time}']
-        print_string_html.extend([gen_html(c) for c in hex_colors])
+        print_string_html.append(''.join([gen_html(c) for c in hex_colors]))
 
         if extra_info:
             print_string += [extra_info]
@@ -422,6 +422,13 @@ class SportsLamp(Lamp):
             return True
         else:
             return False
+
+
+class ColorsLamp(Lamp):
+
+    def show_colors(self, colors):
+        self.set_leds(colors, extra_info="Support Ukraine!")
+        return True
 
 
 if __name__ == "__main__":
