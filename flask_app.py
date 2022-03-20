@@ -3,7 +3,7 @@ import re
 from time import sleep
 from flask_wtf import FlaskForm
 from subprocess import Popen, check_output, CalledProcessError
-from flask import Flask, render_template_string, request
+from flask import Flask, render_template_string, request, json
 from wtforms import SubmitField, SelectField, IntegerField
 
 app = Flask(__name__)
@@ -105,6 +105,33 @@ def watch():
     with open("lamp_html.txt") as f:
         lamp = f.read()
     return lamp
+
+
+@app.route('/status/')
+def status():
+    if os.path.exists("moonlamp.pid"):
+        with open("moonlamp.pid", "r") as f:
+            current_pid = int(f.read())
+        try:
+            current_status = check_output(["ps", "-f", "-p", str(current_pid)]).decode()
+        except CalledProcessError:
+            current_status = ""
+    else:
+        current_status = ""
+
+    current_values = {}
+    for key in ["mode", "delay", "timer-length"]:
+        value = re.search(rf"--{key} ([^\s]+)", current_status)
+        if value:
+            current_values[key] = value.group(1)
+    current_values["mode"] = current_values.get("mode", "off")
+    response = app.response_class(
+        response=json.dumps(current_values),
+        status=200,
+        mimetype='application/json'
+    )
+
+    return response
 
 
 if __name__ == "__main__":
