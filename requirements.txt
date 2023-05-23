@@ -2,6 +2,6 @@ click==7.1.2
 Flask==1.1.2
 Flask-WTF==0.14.3
 python-dotenv==0.15.0
-requests==2.25.0
+requests==2.31.0
 WTForms==2.3.3
 Colr==0.9.1
